@@ -109,6 +109,37 @@ functions:
             path: /comSessions/{sessionId}
             method: get
             cors: true
+  vacanciesAPI:
+    handler: Controller/vacancies.handler
+    events:
+        - http:
+            path: /vacancies/
+            method: post
+            cors: true
+        - http:
+            path: /vacancies/{vacancyId}
+            method: put
+            cors: true    
+        - http:
+            path: /vacancies/
+            method: get
+            cors: true
+        - http:
+            path: /vacancies/pendingVacancy/
+            method: get
+            cors: true
+        - http:
+            path: /vacancies/acceptedvacancy/
+            method: get
+            cors: true        
+        - http:
+            path: /vacancies/{vacancyId}
+            method: get
+            cors: true
+        - http:
+            path: /vacancies/{vacancyId}
+            method: delete
+            cors: true
        
         
        
