@@ -15,7 +15,7 @@ async createSession (session) {
     if(result) {
       return {
         data: session,
-        message: "Program successfully created!"
+        message: "Session successfully created!"
     };
   }
       return "Error creating new program"
