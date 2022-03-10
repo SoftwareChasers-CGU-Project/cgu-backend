@@ -141,6 +141,29 @@ functions:
             method: delete
             cors: true
        
+  consultantAPI:
+    handler: Controller/consultants.handler
+    events:
+        - http:
+            path: /consultants/add
+            method: post
+            cors: true
+        - http:
+            path: /consultants/list
+            method: get
+            cors: true
+        - http:
+            path: /consultants/view/{consultantId}
+            method: get
+            cors: true
+        - http:
+            path: /consultants/delete/{consultantId}
+            method: delete
+            cors: true
+        - http:
+            path: /consultants/update/{consultantId}
+            method: put
+            cors: true
         
        
 #    The following are a few example events you can configure
