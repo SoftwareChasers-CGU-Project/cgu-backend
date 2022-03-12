@@ -109,6 +109,60 @@ functions:
           path: /comSessions/{sessionId}
           method: get
           cors: true
+  vacanciesAPI:
+    handler: Controller/vacancies.handler
+    events:
+      - http:
+          path: /vacancies/
+          method: post
+          cors: true
+      - http:
+          path: /vacancies/{vacancyId}
+          method: put
+          cors: true
+      - http:
+          path: /vacancies/
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/pendingVacancy/
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/acceptedvacancy/
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/{vacancyId}
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/{vacancyId}
+          method: delete
+          cors: true
+  consultantAPI:
+    handler: Controller/consultants.handler
+    events:
+      - http:
+          path: /consultants/add
+          method: post
+          cors: true
+      - http:
+          path: /consultants/list
+          method: get
+          cors: true
+      - http:
+          path: /consultants/view/{consultantId}
+          method: get
+          cors: true
+      - http:
+          path: /consultants/delete/{consultantId}
+          method: delete
+          cors: true
+      - http:
+          path: /consultants/update/{consultantId}
+          method: put
+          cors: true
   albumAPI:
     handler: Controller/image-album.handler
     events:
@@ -120,7 +174,6 @@ functions:
           path: /image-album
           method: get
           cors: true
-          # -----------------------------------------------
       - http:
           path: /image-album/{album_Id}
           method: delete

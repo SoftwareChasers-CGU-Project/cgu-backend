@@ -1,9 +1,8 @@
-const Product= require ('../Model/programs');
+const Session= require ('../Model/com-sessions');
 const mysql = require('../dbconfig');
 
 module.exports = {
 async createSession (session) {
-  // let result = await Product.create(product);
   let sql = "INSERT INTO comSessions SET ?";
   let result =  mysql.query(sql, session, (err) => {
     if (err) {
@@ -22,31 +21,6 @@ async createSession (session) {
 },
 
 
-// async getAllSession ()  {
-
-//   let sql = `SELECT * FROM comSessions`;
-  // if(status=='pending'){
-    // sql=`SELECT * FROM comSessions where sessionStatus='${status}'`
-  // }
-
-  // else{
-    // sql=`SELECT * FROM comSessions`
-  // }
-  
-  // let result = mysql.query(sql);
-  
-  // let result =  mysql.query(sql, (err) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  // });
-//   if(result)  {
-//     return result;
-//   }
-//   return "Error fetching products from db"
-// },
-// },
-
 async getAllPendingSession ()  {
   let sql = "SELECT * FROM comSessions where sessionStatus=0";
   let result = mysql.query(sql);
@@ -62,6 +36,7 @@ async getAllPendingSession ()  {
   return "Error fetching products from db"
 },
 
+
 async getAllAcceptedSession ()  {
   let sql = "SELECT * FROM comSessions where sessionStatus=1";
   let result = mysql.query(sql);
@@ -76,6 +51,7 @@ async getAllAcceptedSession ()  {
   }
   return "Error fetching products from db"
 },
+
 
 async deleteSession(Id)  {
   
@@ -99,7 +75,6 @@ async viewSession(Id)  {
 
 async updateSession()  { 
   var sql = `UPDATE comSessions SET sessionStatus=1`;
-  // var sql = 'UPDATE products SET productName='+product.productName+' WHERE Id='+product.id;
   console.log(sql);
   let result =  mysql.query(sql, (err) => {
     if (err) {
@@ -115,7 +90,5 @@ async updateSession()  {
 }
     return "Error updating the program"
 }
-
- 
 
 };

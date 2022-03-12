@@ -1,13 +1,11 @@
 const serverless = require('serverless-http');
-// var sql = require('serverless-mysql')
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-// const Program= require('../Model/programs');
+const Session= require('../Model/programs');
 const SessionService = require('../Services/com-sessions');
-//const  config = require('../dbconfig');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,11 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
-//  function for getting all products
+//  function for getting all pending sessions
 app.get('/comSessions/pending', async (req, res) => {
   try {
-      // let pool = await sql.connect(config);
-      // const status  = req.params.sessionStatus;
       const allSessions = await SessionService.getAllPendingSession();
       const all= await allSessions;
       if (all) {
@@ -28,17 +24,15 @@ app.get('/comSessions/pending', async (req, res) => {
         )
       }
     } catch (error) {
-       //  handle errors here
        console.log(error, "error!!");
     }
     	
   
   }),
 
+  //  function for getting all accepted sessions
   app.get('/comSessions/accepted', async (req, res) => {
     try {
-        // let pool = await sql.connect(config);
-        // const status  = req.params.sessionStatus;
         const allSessions = await SessionService.getAllAcceptedSession();
         const all= await allSessions;
         if (all) {
@@ -47,52 +41,51 @@ app.get('/comSessions/pending', async (req, res) => {
           )
         }
       } catch (error) {
-         //  handle errors here
-         console.log(error, "error!!");
-      }
-        
-    
-    }),
-  app.delete('/comSessions/:sessionId', async(req, res) => {
-    try {
-        const Id  = req.params.sessionId;
-        const program = await SessionService.deleteSession(Id);
-        
-        if (program) {
-          return res.status(200).send(
-            
-          )
-        }
-      } catch (error) {
-         //  handle errors here
          console.log(error, "error!!");
       }
         
     
     }),
 
+   //  function for getting all delete sessions
+  app.delete('/comSessions/:sessionId', async(req, res) => {
+    try {
+        const Id  = req.params.sessionId;
+        const session = await SessionService.deleteSession(Id);
+        
+        if (session) {
+          return res.status(200).send(
+            
+          )
+        }
+      } catch (error) {
+         console.log(error, "error!!");
+      }
+        
+    
+    }),
+
+    //  function for viewing a session
     app.get('/comSessions/:sessionId', async(req, res) => {
       try {
           const Id  = req.params.sessionId;
-          const Program = await SessionService.viewSession(Id);
+          const session = await SessionService.viewSession(Id);
           
-          if ( Program) {
+          if ( session) {
             return res.status(200).send(
-              Program
+              session
             )
           }
         } catch (error) {
-           //  handle errors here
            console.log(error, "error!!");
         }
           
       
       }),
 
-//  function for creating a new product
+ //  function for creating a new session
  app.post('/comSessions', async (req, res) => {
   try {
-  //await dbConnection();
    const data  = req.body;
    const {sessionTopic,sessionDate,sessionDesc,TargetGroup,companyId} = data;
   if(!data) {
@@ -106,34 +99,25 @@ app.get('/comSessions/pending', async (req, res) => {
     )
    }
   } catch (error) {
-    //  handle errors here
     console.log(error, "error!!");
   }
  
 }),
 
-app.put('/comSessions/:sessionId', async (req, res) => {
-  try {
-  //await dbConnection();
-  //  const data  = req.body;
-  //  console.log(req.body);
-  //  const {ProductName} = data;
-  // if(!req.body) {
-    //  return "Please pass all required fields!"
-  // }
-  //  const dataToSave = {ProductName};
-   let updateProgram =  await SessionService.updateSession();
-   if (updateProgram) {
-     return res.status(200).send(
-      updateProgram
-    )
-   }
-  } catch (error) {
-    //  handle errors here
-    console.log(error, "error!!");
-  }
- 
-}),
+  //  function for update a session
+  app.put('/comSessions/:sessionId', async (req, res) => {
+    try {
+    let updateSession =  await SessionService.updateSession();
+    if (updateSession) {
+      return res.status(200).send(
+        updateSession
+      )
+    }
+    } catch (error) {
+      console.log(error, "error!!");
+    }
+  
+  })
 
 
 

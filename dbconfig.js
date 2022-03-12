@@ -1,5 +1,3 @@
-//var mysql = require('serverless-mysql')()
-require("dotenv").config();
 const mysql = require('serverless-mysql')()
 mysql.config({
     host: process.env.DB_HOST,
