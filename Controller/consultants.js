@@ -97,8 +97,9 @@ app.delete('/consultants/delete/:consultantId/', async (req, res) => {
 app.put('/consultants/update/:consultantId/', async (req, res) => {
   try {
    const data  = req.body;
-   console.log(data);
-   const {consultantFName,consultantLName,universityName, post, email,consultantId} = data;
+   const consultantId = req.params.consultantId;
+   console.log(data.consultantId);
+   const {consultantFName,consultantLName,universityName, post, email} = data;
   if(!data) {
      return "Please pass all required fields!"
   }
