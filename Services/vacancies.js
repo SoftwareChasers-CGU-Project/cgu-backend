@@ -66,7 +66,6 @@ return result;
 },
 
 
-
 async deleteVacancy(vacancyId)  { 	
 let result = await mysql.query({
   sql: 'DELETE FROM vacancies where vacancyId = '+ mysql.escape(vacancyId),
@@ -110,7 +109,22 @@ async getAcceptedVacancies()  {
 
   }
     return "Error fetching vacancies from db"
+},
+
+async postCV(cv) {
+  let sql = "INSERT INTO CV SET ?";
+  let result = mysql.query(sql, cv, (err) => {
+    if (err) {
+      throw err;
+    }
+  });
+
+  if(result) {
+    return {
+      data: CV,
+      message: "CV uploaded successfully!"
+    };
+  }
+  return "Error adding CV"
 }
 }
-
-

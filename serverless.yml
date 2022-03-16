@@ -140,6 +140,10 @@ functions:
             path: /vacancies/{vacancyId}
             method: delete
             cors: true
+        - http:
+            path: /vacancies/CV/
+            method: post
+            cors: true
        
   consultantAPI:
     handler: Controller/consultants.handler

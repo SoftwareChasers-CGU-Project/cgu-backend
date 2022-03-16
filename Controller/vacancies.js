@@ -150,6 +150,27 @@ app.get('/vacancies/', async (req, res) => {
          //  handle errors here
          console.log(error, "error!!");
       }
+    }),
+
+    app.post('/vacancies/CV/', async (req, res) => {
+      try {
+      //  await dbConnection();
+       const data  = req.body;
+       const {name, email,cv} = data;
+     if(!data) {
+         return "Please pass all required fields!"
+      }
+       const dataToSave = {name, email,cv,cvId:uuidv4()};
+       let createCV =  await VacancyService.postCV(dataToSave);
+       if (createCV) {
+         return res.status(200).send(
+          createCV
+        )
+       }
+      } catch (error) {
+        //  handle errors here
+        console.log(error, "error!!");
+      }
     })
 
     module.exports.handler = serverless(app);
