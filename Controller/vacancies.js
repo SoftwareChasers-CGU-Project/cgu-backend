@@ -97,10 +97,11 @@ app.get('/vacancies/', async (req, res) => {
     }
   }),
 
-  app.put('vacancies/:vacancyId/', async (req, res) => {
+  app.put('/vacancies/:vacancyId/', async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
-      // console.log(vacancyId);
+     
+      console.log(vacancyId);
       const acceptvacancy = await VacancyService.acceptVacancy(vacancyId);
       // console.log(getvacancy);
       if(acceptvacancy) {

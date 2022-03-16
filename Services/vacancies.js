@@ -22,6 +22,7 @@ async createVacancy (vacancy) {
 },
 
 async acceptVacancy (vacancyId) {
+  console.log(this.vacancyId);
   let result = await mysql.query({
     sql: 'UPDATE vacancies set VacancyStatus=1 where vacancyId = '+ mysql.escape(vacancyId),
     timeout: 10000,
