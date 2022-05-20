@@ -1,14 +1,9 @@
 const serverless = require('serverless-http');
-// require('dotenv').config()
-
-// console.log(process.env) 
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-
-const mysql = require('../dbconfig');
 const VacancyService = require('../Services/vacancies');
 
 app.use(bodyParser.json());
