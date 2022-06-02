@@ -75,11 +75,11 @@ app.get('/vacancies/', async (req, res) => {
     try {
     //  await dbConnection();
      const data  = req.body;
-     const {companyName, companyEmail, vacancyTitle, vacancyDesc, closingDate, poster,vacancyType} = data;
+     const {companyName, companyEmail, vacancyTitle, vacancyDesc, closingDate, poster} = data;
    if(!data) {
        return "Please pass all required fields!"
     }
-     const dataToSave = {companyName,companyEmail, vacancyTitle, vacancyDesc,closingDate,poster,vacancyType,VacancyId:uuidv4()};
+     const dataToSave = {companyName,companyEmail, vacancyTitle, vacancyDesc,closingDate,poster,VacancyId:uuidv4()};
      let createVacancy =  await VacancyService.createVacancy(dataToSave);
      if (createVacancy) {
        return res.status(200).send(
