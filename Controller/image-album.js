@@ -45,17 +45,33 @@ app.get('/image-album/', async(req, res) => {
 
     }),
 
-    // -------------------------------------------------------------------
+    app.get('/image-album/:album_Id', async(req, res) => {
+        try {
+            const Id = req.params.album_Id;
+            const album = await AlbumService.viewAlbum(Id);
+            if (album) {
+                return res.status(200).send(
+                    album
+                )
+            }
+        } catch (error) {
+            console.log(error, "error");
+        }
+    })
 
-    app.delete('/image-album/:album_Id', async(req, res) => {
+// -------------------------------------------------------------------
+
+app.delete('/image-album/:album_Id', async(req, res) => {
         try {
             console.log(`delete called`)
-            const Id = req.params.album_id;
+            const Id = req.params;
+            console.log('Id ');
             console.log(Id);
             // console.log(`hi`)
             const deleteData = await AlbumService.deleteAlbum(Id);
             if (deleteData) {
                 console.log(`delete called`)
+                console.log('Image album deleted');
                 return res.status(200).send({})
             }
         } catch (error) {
@@ -64,43 +80,7 @@ app.get('/image-album/', async(req, res) => {
         }
     }),
 
-    // -----------------------------------------------------------
-    // app.post("/", (req, res) => {
 
-    // let post = { name: "Jake Smith", description: "Chief Executive Officer" };
-    // const data  = req.body;
-    // const {ProductName} = data;
-    // const dataToSave = {ProductName,Id:uuidv4()};
-    // if(!data) {
-    //    return "Please pass all required fields!"
-    // }
-
-
-    // let sql = "INSERT INTO products SET ?";
-
-    // let query = mysql.query(sql, dataToSave, (err) => {
-
-    // let sql = `INSERT INTO products (Id, ProductName) values (dataToSave`;
-
-    // let query = mysql.query(sql, (err) => {
-
-    //     if (err) {
-
-    //       throw err;
-
-    //     }
-
-    //     if (query) {
-    //       return res.status(200).send({
-    //         data: query
-    //       })
-    //     }
-
-    //   });
-
-    // });
-
-    //  function for creating a new product
     data = require("../Model/image-album")
 app.post('/image-album/', async(req, res) => {
     try {
@@ -128,7 +108,29 @@ app.post('/image-album/', async(req, res) => {
 })
 
 
+app.put('/image-album/:albumId', async(req, res) => {
+    try {
+        console.log(req.body);
+        if (!req.body) {
+            return "Please pass all required fields!"
+        }
+        let updateAlbum = await AlbumService.updateAlbum(req.body);
+        if (updateAlbum) {
+            return res.status(200).send(updateAlbum)
+        }
+    } catch (error) {
+        console.log(error, "error ");
+    }
 
+    // const { productId } = data;
+
+    // const dataToSave = { album_id: uuidv4(), name, description, };
+    // let createAlbum = await AlbumService.createAlbum(dataToSave);
+
+
+
+
+})
 
 
 

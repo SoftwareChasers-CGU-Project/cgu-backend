@@ -1,7 +1,4 @@
-// const Product = require('../Model/products');
-// const mysql= require ('serverless-mysql');
 const mysql = require('../dbconfig');
-
 
 
 module.exports = {
@@ -41,19 +38,6 @@ module.exports = {
             timeout: 10000,
             values: ['serverless']
         })
-
-        // let result =  mysql.query(sql, (err) => {
-
-        //   if (err) {
-
-        //     throw err;
-
-        //   }
-
-
-        // });
-
-
         if (result) {
             // console.log("getAllProducts called")
             return result;
@@ -64,43 +48,49 @@ module.exports = {
     // if(product)  return product;
     // return "Error fetching products from db"
     // }
+    async viewAlbum(Id) {
+        let sql = `SELECT * FROM Album WHERE album_Id=?`;
+        let result = mysql.query(sql, Id);
+        if (result) {
+            // console.log("getAllProducts called")
+            return result;
+        }
 
+        return "Error fetching albums from db"
+    },
 
 
     // ----------------------------------------------------------------------------
 
-    async deleteAlbum(product) {
-
-        let sql = "DELETE FROM Album WHERE album_id = ?";
-
-        let result = mysql.query(sql, product, (err) => {
-
-            if (err) {
-
-                throw err;
-
-            }
-
-        });
-
+    async deleteAlbum(Id) {
+        let sql = "DELETE FROM Album WHERE ?";
+        let result = await mysql.query(sql, Id);
+        console.log(result);
+        // let result =  mysql.query(sql, (err) => {
+        //   if (err) {
+        //     throw err;
+        //   }
+        // });
         if (result) {
-            console.log(result)
-            return {
-                data: product,
-
-                message: "Album deleted"
-            };
+            return result;
         }
-        return "Error deleting album"
-
+        return "Error deleting album from db"
     },
 
-    // -------------------------------------------------------
+    async updateAlbum(Album) {
+        var sql = `UPDATE Album SET name = '${Album.name}', description = '${Album.description}' WHERE album_Id= '${Album.album_Id}' `;
+        let result = mysql.query(sql, (err) => {
+            if (err) {
+                throw err;
+            }
+        });
+        if (result) {
+            return {
+                data: Album,
+                message: "Album updated successfully"
+            }
+        }
+        return "Error updating the album"
+    }
 
-
-    // async getProductById(productId)  {
-    //   let product = await Product.findOne(productId);
-    //   if(product) return product;
-    //   return "Error fetching product from db";
-    // },
 };
