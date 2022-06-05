@@ -44,9 +44,7 @@ async getAllVacancies()  {
   })
 
   if(result)  {
-  
     return result;
-
   }
     return "Error fetching vacancies from db"
 },

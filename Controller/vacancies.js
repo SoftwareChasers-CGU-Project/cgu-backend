@@ -19,9 +19,7 @@ app.use(function(req, res, next) {
 
 app.get('/vacancies/', async (req, res) => {
   try {
-      // await dbConnection();
       const allVacancies = await VacancyService.getAllVacancies();  
-      //const hi= await allVacancies;
       if (allVacancies)
        {
         return res.status(200).send({

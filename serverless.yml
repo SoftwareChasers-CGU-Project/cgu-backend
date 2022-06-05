@@ -66,6 +66,17 @@ functions:
             path: /users/
             method: post
             cors: true
+  AdminRegistrationAPI:
+    handler: Controller/admins.handler
+    events:
+        - http:
+            path: /admins
+            method: post
+            cors: true
+        - http:
+            path: /admins
+            method: get
+            cors: true
   programAPI:
     handler: Controller/programs.handler
     events:
