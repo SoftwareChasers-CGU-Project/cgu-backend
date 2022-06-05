@@ -18,9 +18,9 @@ module.exports = {
         return "Error registering new user"
       },
 
-      async createUndergraduate (user) {
+      async createUndergraduate (undergraduate) {
         let sql = "INSERT INTO undergraduates  SET ?";
-        let result = mysql.query(sql, user, (err) => {
+        let result = mysql.query(sql, undergraduate, (err) => {
           if (err) {
             throw err;
           }
@@ -28,7 +28,7 @@ module.exports = {
       
         if(result) {
           return {
-            data: user,
+            data: undergraduate,
             message: "User successfully registered!"
           };
         }

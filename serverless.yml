@@ -63,7 +63,7 @@ functions:
     handler: Controller/users.handler
     events:
         - http:
-            path: /users/
+            path: /users
             method: post
             cors: true
   AdminRegistrationAPI:
