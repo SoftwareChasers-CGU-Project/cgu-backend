@@ -159,7 +159,7 @@ functions:
             method: delete
             cors: true
         - http:
-            path: /vacancies/CV/
+            path: /vacancies/cv
             method: post
             cors: true
        

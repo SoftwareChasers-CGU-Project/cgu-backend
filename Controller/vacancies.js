@@ -24,8 +24,7 @@ app.get('/vacancies/', async (req, res) => {
        {
         return res.status(200).send({
             data: allVacancies   
-        })
-       
+        })    
       }
     } catch (error) {
        //  handle errors here
@@ -35,9 +34,8 @@ app.get('/vacancies/', async (req, res) => {
 
   app.get('/vacancies/pendingVacancy/', async (req, res) => {
     try {
-        // await dbConnection();
         const allVacancies = await VacancyService.getPendingVacancies();  
-        //const hi= await allVacancies;
+
         if (allVacancies)
          {
           return res.status(200).send({
@@ -52,9 +50,8 @@ app.get('/vacancies/', async (req, res) => {
     }),
     app.get('/vacancies/acceptedvacancy/', async (req, res) => {
       try {
-          // await dbConnection();
           const allVacancies = await VacancyService.getAcceptedVacancies();  
-          //const hi= await allVacancies;
+         
           if (allVacancies)
            {
             return res.status(200).send({
@@ -71,19 +68,19 @@ app.get('/vacancies/', async (req, res) => {
   
   app.post('/vacancies/', async (req, res) => {
     try {
-    //  await dbConnection();
      const data  = req.body;
      const {companyName, companyEmail, vacancyTitle, vacancyDesc, closingDate, poster} = data;
    if(!data) {
        return "Please pass all required fields!"
     }
-     const dataToSave = {companyName,companyEmail, vacancyTitle, vacancyDesc,closingDate,poster,VacancyId:uuidv4()};
-     let createVacancy =  await VacancyService.createVacancy(dataToSave);
+     const dataToVacancy = {companyName,companyEmail, vacancyTitle, vacancyDesc,closingDate,poster,VacancyId:uuidv4()};
+     const dataToCompany = {companyEmail, companyName};
+     console.log(dataToCompany);
+     let createVacancy =  await VacancyService.createVacancy(dataToVacancy, dataToCompany);
      if (createVacancy) {
        return res.status(200).send(
         createVacancy
-      )
-     }
+      )}
     } catch (error) {
       //  handle errors here
       console.log(error, "error!!");
@@ -111,9 +108,8 @@ app.get('/vacancies/', async (req, res) => {
 
     app.get('/vacancies/:vacancyId/', async (req, res) => {
       try {
-       // await dbConnection();
         const vacancyId = req.params.vacancyId;
-        // console.log(vacancyId);
+  
         const getvacancy = await VacancyService.getVacancyById(vacancyId);
     
         // console.log(getvacancy);
@@ -131,9 +127,8 @@ app.get('/vacancies/', async (req, res) => {
     app.delete('/vacancies/:vacancyId/', async (req, res) => {
       try {
         const vacancyId = req.params.vacancyId;
-        // console.log(vacancyId);
         const deletevacancy = await VacancyService.deleteVacancy(vacancyId);
-        // console.log(getvacancy);
+    
         if(deletevacancy) {
           return res.status(200).send({
             deletevacancy
@@ -145,15 +140,14 @@ app.get('/vacancies/', async (req, res) => {
       }
     }),
 
-    app.post('/vacancies/CV/', async (req, res) => {
+    app.post('/vacancies/cv/', async (req, res) => {
       try {
-      //  await dbConnection();
        const data  = req.body;
-       const {name, email,cv} = data;
+       const {vacancyId, undergrad_email} = data;
      if(!data) {
          return "Please pass all required fields!"
       }
-       const dataToSave = {name, email,cv,cvId:uuidv4()};
+       const dataToSave = {vacancyId, undergrad_email};
        let createCV =  await VacancyService.postCV(dataToSave);
        if (createCV) {
          return res.status(200).send(

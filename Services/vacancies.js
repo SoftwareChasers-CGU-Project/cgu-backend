@@ -4,9 +4,16 @@ const mysql = require('../dbconfig');
 
 module.exports = {
 
-async createVacancy (vacancy) {
+async createVacancy (vacancy, company) {
   let sql = "INSERT INTO vacancies SET ?";
   let result = mysql.query(sql, vacancy, (err) => {
+    if (err) {
+      throw err;
+    }
+  });
+  
+  let sql2 = "INSERT INTO company SET ?"; 
+  let result2 = mysql.query(sql2, company, (err) => {
     if (err) {
       throw err;
     }
@@ -110,7 +117,7 @@ async getAcceptedVacancies()  {
 },
 
 async postCV(cv) {
-  let sql = "INSERT INTO CV SET ?";
+  let sql = "INSERT INTO apply SET ?";
   let result = mysql.query(sql, cv, (err) => {
     if (err) {
       throw err;
@@ -119,7 +126,7 @@ async postCV(cv) {
 
   if(result) {
     return {
-      data: CV,
+      data: cv,
       message: "CV uploaded successfully!"
     };
   }
