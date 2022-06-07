@@ -178,6 +178,22 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
+  consultationAPI:
+    handler: Controller/consultation.handler
+    events:
+      - http:
+          path: /consultationReq/add
+          method: post
+          cors: true
+      - http:
+          path: /consultation-Requests/list
+          method: get
+          cors: true
+      - http:
+          path: /scheduled-sessions/list
+          method: get
+          cors: true
+
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
