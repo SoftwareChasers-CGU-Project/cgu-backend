@@ -109,6 +109,45 @@ functions:
             path: /comSessions/{sessionId}
             method: get
             cors: true
+        - http:
+            path: /company/{companyEmail}
+            method: get
+            cors: true
+  registerEventAPI:
+    handler: Controller/registerEvent.handler
+    events:
+        - http:
+            path: /registerEvent
+            method: post
+            cors: true
+        - http:
+            path: /registerEvent/{eventId}
+            method: get
+            cors: true
+  registerSessionAPI:
+    handler: Controller/registerSession.handler
+    events:
+        - http:
+            path: /registerSession
+            method: post
+            cors: true
+        - http:
+            path: /registerSession/{eventId}
+            method: get
+            cors: true
+        # - http:
+        #     path: /programs/{programId}
+        #     method: get
+        #     cors: true
+        # - http:
+        #     path: /programs/{programId}
+        #     method: delete
+        #     cors: true
+        # - http:
+        #     path: /programs/{programId}
+        #     method: put
+        #     cors: true
+
   vacanciesAPI:
     handler: Controller/vacancies.handler
     events:

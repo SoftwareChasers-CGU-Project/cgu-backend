@@ -4,8 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-const Program= require('../Model/programs');
-const ProgramService = require('../Services/programs');
+const Program= require('../Model/registerEvent');
+const RegisterSessionService = require('../Services/registerSession');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -49,10 +49,11 @@ app.get('/programs', async (req, res) => {
     }),
 
     //  function for viewing a program
-    app.get('/programs/:programId', async(req, res) => {
+    app.get('/registerSession/:eventId', async(req, res) => {
       try {
-          const Id  = req.params.programId;
-          const Program = await ProgramService.viewProgram(Id);
+          const Id  = req.params.eventId;
+          console.log(Id)
+          const Program = await RegisterSessionService.getUndergraduates(Id);
           
           if ( Program) {
             return res.status(200).send(
@@ -67,15 +68,25 @@ app.get('/programs', async (req, res) => {
     }),
 
     //  function for creating a new program
-    app.post('/programs', async (req, res) => {
+    app.post('/registerSession', async (req, res) => {
+      console.log(req.body);
+      // if(req.body.email == "abc"){
+      //   res.status(200).json({status : true, msg : "Success"});
+
+      // }else{
+      //   res.status(422).json({status : false, msg : "False"});
+
+      // }
+      // return "Please pass all required fields!";
+
       try {
-      const data  = req.body;
-      const {programImage,programName,programDate,programCat,programDesc} = data;
-      if(!data) {
-        return "Please pass all required fields!"
-      }
-      const dataToSave = {programImage,programName,programDate,programCat,programDesc,programId:uuidv4()};
-      let createProgram =  await ProgramService.createProgram(dataToSave);
+      // const data  = req.body;
+      // const {eventId,undergradEmail} = data;
+      // if(!data) {
+      //   return "Please pass all required fields!"
+      // }
+      // const dataToSave = req.body;
+      let createProgram =  await RegisterSessionService.addRegisterSession(req.body);
       if (createProgram) {
         return res.status(200).send(
           createProgram
