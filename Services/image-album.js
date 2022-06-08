@@ -78,7 +78,9 @@ module.exports = {
     },
 
     async updateAlbum(Album) {
-        var sql = `UPDATE Album SET name = '${Album.name}', description = '${Album.description}' WHERE album_Id= '${Album.album_Id}' `;
+        var sql = `UPDATE Album SET name = '${Album.albumName}', description = '${Album.albumDesc}' WHERE album_Id= '${Album.albumId}' `;
+        // console.log(Album.albumId)
+        console.log(sql)
         let result = mysql.query(sql, (err) => {
             if (err) {
                 throw err;

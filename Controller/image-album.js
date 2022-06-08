@@ -111,24 +111,22 @@ app.post('/image-album/', async(req, res) => {
 app.put('/image-album/:albumId', async(req, res) => {
     try {
         console.log(req.body);
+        const albumId = req.params.albumId;
+        const albumName = req.body.name;
+        const albumDesc = req.body.description;
+        console.log(albumId);
+        // console.log(album_id);
         if (!req.body) {
             return "Please pass all required fields!"
         }
-        let updateAlbum = await AlbumService.updateAlbum(req.body);
+        const dataToSave = { albumName, albumDesc, albumId };
+        let updateAlbum = await AlbumService.updateAlbum(dataToSave);
         if (updateAlbum) {
             return res.status(200).send(updateAlbum)
         }
     } catch (error) {
         console.log(error, "error ");
     }
-
-    // const { productId } = data;
-
-    // const dataToSave = { album_id: uuidv4(), name, description, };
-    // let createAlbum = await AlbumService.createAlbum(dataToSave);
-
-
-
 
 })
 
