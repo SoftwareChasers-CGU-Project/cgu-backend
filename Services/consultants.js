@@ -2,7 +2,17 @@ const mysql = require('../dbconfig');
 
 module.exports = {
 async createConsultant (consultant) {
+  //let sql=`INSERT INTO consultants Values() consultantFName='${consultant.consultantFName}',consultantLName='${consultant.consultantLName}',universityName='${consultant.universityName}',consultantImage='${consultant.consultantImage}', post='${consultant.post}', email='${consultant.email}'  WHERE consultantId='${consultant.consultantId}'`;
+  let check_sql=await mysql.query(`select * from consultants where email='${consultant.email}'`)
+  console.log(check_sql[0]);
+  if(check_sql[0]!=null){
+    console.log("hello");
+    //throw new Error('Consultant email already exists');
+    return;
+  }  
+ 
   let sql = "INSERT INTO consultants SET ?";
+  console.log(sql);
   let result = mysql.query(sql, consultant, (err) => {
     if (err) {
       throw err;

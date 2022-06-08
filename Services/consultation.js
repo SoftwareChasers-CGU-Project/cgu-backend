@@ -2,13 +2,13 @@ const mysql = require('../dbconfig');
 
 module.exports = {
 async createConsultationReq (consultationReq) {
-  let sql = "INSERT INTO consultationRequests SET ?";
-  console.log("con");
+  console.log(consultationReq);
+  let sql = "INSERT INTO consultationRequests SET undergraduate_email=data.undergraduate_email, consultation_id=data.consultation_id";
+  console.log(sql);
   let result = mysql.query(sql, consultationReq, (err) => {
     if (err) {
       throw err;
     }
-
   });
 
     if(result) {
