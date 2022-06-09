@@ -38,15 +38,15 @@ module.exports = {
       },
 
 
-      // async checkUser(email)  {
-      //   let result = await mysql.query({
-      //     sql: "SELECT EXISTS(SELECT 1 FROM undergraduates WHERE email =" +mysql.escape(email) +" LIMIT 1 ) as checkEmail"
-      //   })
+      async checkUser(email)  {
+        let result = await mysql.query({
+          sql: "SELECT EXISTS(SELECT 1 FROM undergraduates WHERE email =" +mysql.escape(email) +" LIMIT 1 ) as checkEmail"
+        })
 
-      //   console.log(result); 
-      //     if(result)  { 
-      //       return result;
-      //     }
-      //   return "Error fetching vacancies from db"
-      // },
+        console.log(result); 
+          if(result)  { 
+            return result;
+          }
+        return "Error fetching vacancies from db"
+      },
 }

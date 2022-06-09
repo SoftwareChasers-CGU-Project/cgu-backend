@@ -15,9 +15,9 @@ app.post('/users/', async (req, res) => {
     try {
      const data  = req.body;
      const { email, undergradFName, undergradLName,faculty, batch, undergradPassword,phone_number} = data;
-   if(!data) {
+     if(!data) {
        return "Please pass all required fields!"
-    }
+     }
   
     const dataToSaveUser = {email,phone_number};
     const dataToSaveUnderg = {email,undergradFName, undergradLName,faculty, batch, undergradPassword};
@@ -28,29 +28,28 @@ app.post('/users/', async (req, res) => {
      if (createUser) {
        return res.status(200).send(
         createUser
-      )
-     }
+      )}
     } catch (error) {
       //  handle errors here
       console.log(error, "error!!");
     }
   }),
 
-  // app.get('/users/check/:email/', async (req, res) => {
-  //   try {
-  //     const email = req.params.email;
-  //     const checkUser = await UserService.checkUser(email);
+  app.get('/users/check/:email/', async (req, res) => {
+    try {
+      const email = req.params.email;
+      const checkUser = await UserService.checkUser(email);
   
-  //     if(checkUser) {
-  //       return res.status(200).send({
-  //          data : checkUser
-  //       })
-  //     }
-  //   } catch (error) {
-  //      //  handle errors here
-  //      console.log(error, "error!!");
-  //   }
-  // })
+      if(checkUser) {
+        return res.status(200).send({
+           data : checkUser
+        })
+      }
+    } catch (error) {
+       //  handle errors here
+       console.log(error, "error!!");
+    }
+  })
 
 
   module.exports.handler = serverless(app);
