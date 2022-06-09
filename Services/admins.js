@@ -11,13 +11,14 @@ module.exports = {
         }
       });
 
-        if(result) {
+      if(result) {
           return {
             data: admin,
             message: "Admin successfully created!"
-        };
+          };
       }
           return "Error creating new admin"
+
     },
     
     //get all admins
@@ -26,11 +27,11 @@ module.exports = {
       let result = await mysql.query({
         sql: 'SELECT a.email, a.adminFName, a.adminLName, u.phone_number FROM administrators a, users u WHERE a.email = u.email'
       })
+
       if(result)  {
         return result;
       }
         return "Error fetching admins from db"
     }
-      
-
+    
 }

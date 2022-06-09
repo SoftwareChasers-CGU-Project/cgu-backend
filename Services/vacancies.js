@@ -14,6 +14,7 @@ async createVacancy (vacancy, company) {
   });
   
   let sql2 = "INSERT INTO company SET ?"; 
+
   let result2 = mysql.query(sql2, company, (err) => {
     if (err) {
       throw err;
@@ -42,18 +43,6 @@ async acceptVacancy (vacancyId) {
     return "Error fetching vacanciess from db"
 },
 
-// async getAllVacancies()  {
-//   let result = await mysql.query({
-//     sql: 'SELECT * FROM vacancies',
-//     timeout: 10000,
-//     values: ['serverless']
-//   })
-//   if(result)  {
-//     return result;
-//   }
-//     return "Error fetching vacancies from db"
-// },
- 
 
 //get a vacancy using Id
 async getVacancyById(vacancyId)  {
@@ -143,3 +132,15 @@ async getAllLinks()  {
 }
 
 
+// async getAllVacancies()  {
+//   let result = await mysql.query({
+//     sql: 'SELECT * FROM vacancies',
+//     timeout: 10000,
+//     values: ['serverless']
+//   })
+//   if(result)  {
+//     return result;
+//   }
+//     return "Error fetching vacancies from db"
+// },
+ 

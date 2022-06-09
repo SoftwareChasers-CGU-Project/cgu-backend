@@ -14,28 +14,28 @@ const multer  = require('multer');
 //Register a new admin
 app.post('/admins', async (req, res) => {
     try {
-    const data  = req.body;
-    const {adminFName,adminLName,email,adminPassword,phone_number} = data;
-    if(!data) {
-      return "Please pass all required fields!"
-    }
-    const dataToSaveUser = {email,phone_number};
-    const dataToSaveAdmin = {email,adminFName,adminLName,adminPassword};
+      const data  = req.body;
+      const {adminFName,adminLName,email,adminPassword,phone_number} = data;
+       if(!data) {
+          return "Please pass all required fields!"
+       }
+      const dataToSaveUser = {email,phone_number};
+      const dataToSaveAdmin = {email,adminFName,adminLName,adminPassword};
 
-    let createUser=  await UserService.createUser(dataToSaveUser);
-    let createAdmin=  await AdminService.createAdmin(dataToSaveAdmin);
+      let createUser=  await UserService.createUser(dataToSaveUser);
+      let createAdmin=  await AdminService.createAdmin(dataToSaveAdmin);
 
-    if (createAdmin) {
-      return res.status(200).send(
-        createAdmin
-      ) }
-    } catch (error) {
+      if (createAdmin) {
+           return res.status(200).send(
+             createAdmin
+      )}
+    }catch (error) {
       console.log(error, "error!!");
     }
-  }),
+}),
 
-  //get all administrators
-  app.get('/admins/', async (req, res) => {
+//get all administrators
+app.get('/admins/', async (req, res) => {
     try {
         const AllAdmins = await AdminService.getAllAdmins();  
         if (AllAdmins)
@@ -43,11 +43,11 @@ app.post('/admins', async (req, res) => {
           return res.status(200).send({
               data: AllAdmins   
           }) 
-        }
-      } catch (error) {
+         }
+    }catch (error) {
          //  handle errors here
          console.log(error, "error!!");
-      }
-    })
+    }
+})
 
 module.exports.handler = serverless(app);
