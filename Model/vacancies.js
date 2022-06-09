@@ -1,14 +1,15 @@
-// const mongoose = require("mongoose");
-// const VacancySchema = new mongoose.Schema (
-//   {
-//     name: {type: String},
-//     type: {type: String},
-//     cost: {type: Number},
-//     description: {type: String},
-//     productId: { type: String },
-//   },
-//   {timestamps: true}
-// ); 
 
-// const VacancyModel = mongoose.model("vacancy", VacancySchema);
-// module.exports = VacancyModel;
+class vacancies{
+  constructor(vacancyId,companyName,companyEmail,vacancyTitle, vacancyDesc , closingDate, poster, vacancyStatus) {
+      this.vacancyId = vacancyId;
+      this.companyName = companyName;
+      this.companyEmail = companyEmail;
+      this.vacancyTitle = vacancyTitle;
+      this.vacancyDesc = vacancyDesc;
+      this.closingDate = closingDate;
+      this.poster = poster;
+      this.vacancyStatus = vacancyStatus;
+  }
+}
+
+module.exports = VacancyModel;
