@@ -10,7 +10,7 @@ mysql.config({
 
 
 mysql.connect((err) => {
-    i
+    
     if (!err) {
         console.log("Connected");
     } else {

@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-const Program= require('../Model/programs');
+const News= require('../Model/news');
 const NewsService = require('../Services/news');
 
 app.use(bodyParser.json());
@@ -33,11 +33,11 @@ app.get('/news', async (req, res) => {
   app.post('/news', async (req, res) => {
     try {
     const data  = req.body;
-    const {news_image,add_date,title,descriptipn} = data;
+    const {newsDate,title,newsDescription} = data;
     if(!data) {
       return "Please pass all required fields!"
     }
-    const dataToSave = {news_image,add_date,title,descriptipn,news_id :uuidv4()};
+    const dataToSave = {newsDate,title,newsDescription,newsID :uuidv4()};
     let createProgram =  await NewsService.createNews(dataToSave);
     if (createProgram) {
       return res.status(200).send(
@@ -49,5 +49,59 @@ app.get('/news', async (req, res) => {
     }
   
   })
+
+  app.delete('/news/:newsId', async(req, res) => {
+    try {
+        const Id  = req.params.newsId;
+        const news = await NewsService.deleteNews(Id);
+        
+        if (news) {
+          return res.status(200).send(
+            
+          )
+        }
+      } catch (error) {
+         console.log(error, "error!!");
+      }
+        
+    
+    }),
+
+    app.get('/news/:newsId', async(req, res) => {
+      try {
+          const Id  = req.params.newsId;
+          const news = await NewsService.viewNews(Id);
+          
+          if ( news) {
+            return res.status(200).send(
+              news
+            )
+          }
+        } catch (error) {
+           console.log(error, "error!!");
+        }
+          
+      
+    }),
+
+    app.put('/news/:newsId', async (req, res) => {
+      try {
+      console.log(req.body);
+      const newsID  = req.params.newsId;
+      if(!req.body) {
+        return "Please pass all required fields!"
+      }
+      let updateNews =  await NewsService.updateNews({newsID,...req.body});
+      if (updateNews) {
+        return res.status(200).send(
+          updateNews
+        )
+      }
+      } catch (error) {
+        console.log(error, "error!!");
+      }
+ 
+    })
+
 
   module.exports.handler = serverless(app);
