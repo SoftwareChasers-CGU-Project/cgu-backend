@@ -31,7 +31,7 @@ async getPendingRequests ()  {
 },
 
 async getScheduledSessions()  {
-  let sql = "SELECT u.undergradFName,u.undergradLName, u.batch, u.faculty,u.email,Date(c.sessionDate) as sessionDate ,c.sessionTime,co.consultantFName,co.consultantLName FROM consultationRequests cr, undergraduates u,consultation c, consultationRequestprovide cp, consultants co WHERE c.requestStatus=1 and cr.undergraduate_email=u.email and cr.consultation_id=c.consultationId and cp.consultation_id=c.consultationId and cp.consultantId=co.consultantId";
+  let sql = "SELECT u.undergradFName,u.undergradLName, u.batch, u.faculty,u.email,c.sessionDate,c.sessionTime,co.consultantFName,co.consultantLName FROM consultationRequests cr, undergraduates u,consultation c, consultationRequestprovide cp, consultants co WHERE c.requestStatus=1 and cr.undergraduate_email=u.email and cr.consultation_id=c.consultationId and cp.consultation_id=c.consultationId and cp.consultantId=co.consultantId";
   let result = await mysql.query(sql);
 
   if(result)  {
