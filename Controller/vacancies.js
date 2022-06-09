@@ -10,13 +10,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //cors headers
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // update to match the domain you will make the request from
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 
+//get all linkdin profile links
+app.get('/vacancies/apply', async (req, res) => {
+  try {
+      const allLinks = await VacancyService.getAllLinks();  
+
+      if (allLinks)
+       {
+        return res.status(200).send({
+            data: allLinks
+        })
+       
+      }
+    } catch (error) {
+       //  handle errors here
+       console.log(error, "error!!");
+    }
+  }),
+
+
+//get all vacancies
 app.get('/vacancies/', async (req, res) => {
   try {
       const allVacancies = await VacancyService.getAllVacancies();  
@@ -32,6 +52,8 @@ app.get('/vacancies/', async (req, res) => {
     }
   }),
 
+
+  //get all pending vacancies
   app.get('/vacancies/pendingVacancy/', async (req, res) => {
     try {
         const allVacancies = await VacancyService.getPendingVacancies();  
@@ -48,6 +70,9 @@ app.get('/vacancies/', async (req, res) => {
          console.log(error, "error!!");
       }
     }),
+
+
+    //get all accepted vacancies
     app.get('/vacancies/acceptedvacancy/', async (req, res) => {
       try {
           const allVacancies = await VacancyService.getAcceptedVacancies();  
@@ -64,8 +89,9 @@ app.get('/vacancies/', async (req, res) => {
            console.log(error, "error!!");
         }
       }),
-        
   
+      
+  //post a vacancy
   app.post('/vacancies/', async (req, res) => {
     try {
      const data  = req.body;
@@ -87,13 +113,15 @@ app.get('/vacancies/', async (req, res) => {
     }
   }),
 
+
+  //Accept a vacancy 
   app.put('/vacancies/:vacancyId/', async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
      
       console.log(vacancyId);
       const acceptvacancy = await VacancyService.acceptVacancy(vacancyId);
-      // console.log(getvacancy);
+  
       if(acceptvacancy) {
         return res.status(200).send({
           acceptvacancy
@@ -105,14 +133,13 @@ app.get('/vacancies/', async (req, res) => {
     }
   }),
    
-
+//get a vacancy by Id
     app.get('/vacancies/:vacancyId/', async (req, res) => {
       try {
         const vacancyId = req.params.vacancyId;
   
         const getvacancy = await VacancyService.getVacancyById(vacancyId);
     
-        // console.log(getvacancy);
         if(getvacancy) {
           return res.status(200).send({
              data: getvacancy
@@ -124,6 +151,8 @@ app.get('/vacancies/', async (req, res) => {
       }
     }),
 
+
+    //delete a vacancy
     app.delete('/vacancies/:vacancyId/', async (req, res) => {
       try {
         const vacancyId = req.params.vacancyId;
@@ -140,24 +169,27 @@ app.get('/vacancies/', async (req, res) => {
       }
     }),
 
-    app.post('/vacancies/cv/', async (req, res) => {
+
+    //apply for a vacancy
+    app.post('/vacancies/apply/', async (req, res) => {
       try {
        const data  = req.body;
-       const {vacancyId, undergrad_email} = data;
+       const {vacancyId, undergrad_email, linkedin} = data;
      if(!data) {
          return "Please pass all required fields!"
       }
-       const dataToSave = {vacancyId, undergrad_email};
-       let createCV =  await VacancyService.postCV(dataToSave);
-       if (createCV) {
+       const dataToSave = {vacancyId, undergrad_email, linkedin};
+       let apply =  await VacancyService.applyVacancy(dataToSave);
+       if (apply) {
          return res.status(200).send(
-          createCV
+          apply
         )
        }
       } catch (error) {
         //  handle errors here
         console.log(error, "error!!");
       }
-    })
+    }),
 
+    
     module.exports.handler = serverless(app);

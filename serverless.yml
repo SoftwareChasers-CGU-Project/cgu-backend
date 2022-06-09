@@ -66,6 +66,10 @@ functions:
             path: /users
             method: post
             cors: true
+        - http:
+            path: /users/check/{email}
+            method: get
+            cors: true
   AdminRegistrationAPI:
     handler: Controller/admins.handler
     events:
@@ -159,10 +163,13 @@ functions:
             method: delete
             cors: true
         - http:
-            path: /vacancies/cv
+            path: /vacancies/apply/
             method: post
             cors: true
-       
+        - http:
+            path: /vacancies/apply
+            method: get
+            cors: true        
   consultantAPI:
     handler: Controller/consultants.handler
     events:

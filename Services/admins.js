@@ -1,6 +1,8 @@
 const mysql = require('../dbconfig');
 
 module.exports = {
+
+    //create a new admin
     async createAdmin (admin) {
       let sql = "INSERT INTO administrators SET ?";
       let result =  mysql.query(sql, admin, (err) => {
@@ -18,14 +20,12 @@ module.exports = {
           return "Error creating new admin"
     },
     
+    //get all admins
     async getAllAdmins(){
   	
       let result = await mysql.query({
-        sql: 'SELECT a.email, a.adminFName, a.adminLName, u.phone_number FROM administrators a, users u WHERE a.email = u.email',
-        timeout: 10000,
-        values: ['serverless']
+        sql: 'SELECT a.email, a.adminFName, a.adminLName, u.phone_number FROM administrators a, users u WHERE a.email = u.email'
       })
-    
       if(result)  {
         return result;
       }

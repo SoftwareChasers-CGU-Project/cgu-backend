@@ -1,4 +1,3 @@
-
 const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
@@ -8,10 +7,10 @@ uuidv4();
 // const registration= require('../Model/programs');
 const UserService = require('../Services/users');
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//create a user
 app.post('/users/', async (req, res) => {
     try {
      const data  = req.body;
@@ -35,6 +34,23 @@ app.post('/users/', async (req, res) => {
       //  handle errors here
       console.log(error, "error!!");
     }
-  });
+  }),
+
+  // app.get('/users/check/:email/', async (req, res) => {
+  //   try {
+  //     const email = req.params.email;
+  //     const checkUser = await UserService.checkUser(email);
+  
+  //     if(checkUser) {
+  //       return res.status(200).send({
+  //          data : checkUser
+  //       })
+  //     }
+  //   } catch (error) {
+  //      //  handle errors here
+  //      console.log(error, "error!!");
+  //   }
+  // })
+
 
   module.exports.handler = serverless(app);

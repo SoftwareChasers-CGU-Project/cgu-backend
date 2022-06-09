@@ -4,6 +4,7 @@ const mysql = require('../dbconfig');
 
 module.exports = {
 
+//post a vacancy
 async createVacancy (vacancy, company) {
   let sql = "INSERT INTO vacancies SET ?";
   let result = mysql.query(sql, vacancy, (err) => {
@@ -28,12 +29,11 @@ async createVacancy (vacancy, company) {
   return "Error creating new vacancy"
 },
 
+//Accept a vacancy
 async acceptVacancy (vacancyId) {
   console.log(this.vacancyId);
   let result = await mysql.query({
-    sql: 'UPDATE vacancies set VacancyStatus=1 where vacancyId = '+ mysql.escape(vacancyId),
-    timeout: 10000,
-    values: ['serverless']
+    sql: 'UPDATE vacancies set VacancyStatus=1 where vacancyId = '+ mysql.escape(vacancyId)
   })
 
   if(result)  {
@@ -42,40 +42,36 @@ async acceptVacancy (vacancyId) {
     return "Error fetching vacanciess from db"
 },
 
-async getAllVacancies()  {
-  	
-  let result = await mysql.query({
-    sql: 'SELECT * FROM vacancies',
-    timeout: 10000,
-    values: ['serverless']
-  })
+// async getAllVacancies()  {
+//   let result = await mysql.query({
+//     sql: 'SELECT * FROM vacancies',
+//     timeout: 10000,
+//     values: ['serverless']
+//   })
+//   if(result)  {
+//     return result;
+//   }
+//     return "Error fetching vacancies from db"
+// },
+ 
 
-  if(result)  {
-    return result;
-  }
-    return "Error fetching vacancies from db"
-},
-  
+//get a vacancy using Id
 async getVacancyById(vacancyId)  {
-
 let result = await mysql.query({
-  sql: 'SELECT * FROM vacancies where vacancyId = '+ mysql.escape(vacancyId),
-  timeout: 10000,
-  values: ['serverless']
+  sql: 'SELECT * FROM vacancies where vacancyId = '+ mysql.escape(vacancyId)
 })
 
 if(result)  { 
+console.log(result);
 return result;
 }
   return "Error fetching vacancies from db"
 },
 
-
+//delete a vacancy
 async deleteVacancy(vacancyId)  { 	
 let result = await mysql.query({
-  sql: 'DELETE FROM vacancies where vacancyId = '+ mysql.escape(vacancyId),
-  timeout: 10000,
-  values: ['serverless']
+  sql: 'DELETE FROM vacancies where vacancyId = '+ mysql.escape(vacancyId)
 })
 
 if(result)  {
@@ -84,28 +80,24 @@ return result;
   return "Error fetching vacancies from db"
 },
 
+
+//get all pending vacancies
 async getPendingVacancies()  {
- 	
   let result = await mysql.query({
-    sql: 'SELECT * FROM vacancies where VacancyStatus=0',
-    timeout: 10000,
-    values: ['serverless']
+    sql: 'SELECT * FROM vacancies where VacancyStatus=0'
   })
-
+ 
   if(result)  {
-  
     return result;
-
   }
     return "Error fetching vacancies from db"
 },
 
+
+//get all accepted vacancies
 async getAcceptedVacancies()  {
-  	
   let result = await mysql.query({
-    sql: 'SELECT * FROM vacancies where VacancyStatus=1',
-    timeout: 10000,
-    values: ['serverless']
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1'
   })
 
   if(result)  {
@@ -116,9 +108,11 @@ async getAcceptedVacancies()  {
     return "Error fetching vacancies from db"
 },
 
-async postCV(cv) {
-  let sql = "INSERT INTO apply SET ?";
-  let result = mysql.query(sql, cv, (err) => {
+
+//apply for a vacancy
+async applyVacancy(link) {
+  let sql = "INSERT INTO applyVacancies SET ?";
+  let result = mysql.query(sql, link, (err) => {
     if (err) {
       throw err;
     }
@@ -126,10 +120,26 @@ async postCV(cv) {
 
   if(result) {
     return {
-      data: cv,
-      message: "CV uploaded successfully!"
+      data: link,
+      message: "Linkedin link uploaded successfully!"
     };
   }
-  return "Error adding CV"
+  return "Error adding Linkedin link"
+},
+
+
+//get all Linkedin profile links
+async getAllLinks()  {
+  let result = await mysql.query({
+    sql: 'SELECT CONCAT(u.undergradFName," ",undergradLName) as fullname, v.vacancyTitle, v.companyName, a.linkedin FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and u.email = a.undergrad_email;'
+  })
+  
+  if(result)  {
+    return result;
+  }
+    return "Error fetching Linkedin links from db"
 }
+
 }
+
+

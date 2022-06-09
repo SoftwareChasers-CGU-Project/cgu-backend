@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const multer  = require('multer');
 
-//Function to register new admin
+//Register a new admin
 app.post('/admins', async (req, res) => {
     try {
     const data  = req.body;
@@ -34,7 +34,7 @@ app.post('/admins', async (req, res) => {
     }
   }),
 
-  //Function to get all administrators
+  //get all administrators
   app.get('/admins/', async (req, res) => {
     try {
         const AllAdmins = await AdminService.getAllAdmins();  
