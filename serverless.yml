@@ -19,7 +19,7 @@ app: product-api
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 provider:
   name: aws
@@ -84,121 +84,135 @@ functions:
   programAPI:
     handler: Controller/programs.handler
     events:
-        - http:
-            path: /programs
-            method: post
-            cors: true
-        - http:
-            path: /programs
-            method: get
-            cors: true
-        - http:
-            path: /programs/{programId}
-            method: get
-            cors: true
-        - http:
-            path: /programs/{programId}
-            method: delete
-            cors: true
-        - http:
-            path: /programs/{programId}
-            method: put
-            cors: true
+      - http:
+          path: /programs
+          method: post
+          cors: true
+      - http:
+          path: /programs
+          method: get
+          cors: true
+      - http:
+          path: /programs/{programId}
+          method: get
+          cors: true
+      - http:
+          path: /programs/{programId}
+          method: delete
+          cors: true
+      - http:
+          path: /programs/{programId}
+          method: put
+          cors: true
   com-sessionAPI:
     handler: Controller/com-sessions.handler
     events:
-        - http:
-            path: /comSessions/pending
-            method: get
-            cors: true
-        - http:
-            path: /comSessions/accepted
-            method: get
-            cors: true
-        - http:
-            path: /comSessions
-            method: post
-            cors: true
-        - http:
-            path: /comSessions/{sessionId}
-            method: put
-            cors: true
-        - http:
-            path: /comSessions/{sessionId}
-            method: delete
-            cors: true
-        - http:
-            path: /comSessions/{sessionId}
-            method: get
-            cors: true
+      - http:
+          path: /comSessions/pending
+          method: get
+          cors: true
+      - http:
+          path: /comSessions/accepted
+          method: get
+          cors: true
+      - http:
+          path: /comSessions
+          method: post
+          cors: true
+      - http:
+          path: /comSessions/{sessionId}
+          method: put
+          cors: true
+      - http:
+          path: /comSessions/{sessionId}
+          method: delete
+          cors: true
+      - http:
+          path: /comSessions/{sessionId}
+          method: get
+          cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events:
-        - http:
-            path: /vacancies/
-            method: post
-            cors: true
-        - http:
-            path: /vacancies/{vacancyId}
-            method: put
-            cors: true    
-        - http:
-            path: /vacancies/
-            method: get
-            cors: true
-        - http:
-            path: /vacancies/pendingVacancy/
-            method: get
-            cors: true
-        - http:
-            path: /vacancies/acceptedvacancy/
-            method: get
-            cors: true        
-        - http:
-            path: /vacancies/{vacancyId}
-            method: get
-            cors: true
-        - http:
-            path: /vacancies/{vacancyId}
-            method: delete
-            cors: true
-        - http:
-            path: /vacancies/apply/
-            method: post
-            cors: true
-        - http:
-            path: /vacancies/apply
-            method: get
-            cors: true
-        - http:
-            path: /vacancies/filterVacancies/{vacancyType}
-            method: get
-            cors: true        
+    events:         
+      - http:
+          path: /vacancies/
+          method: post
+          cors: true
+      - http:
+          path: /vacancies/{vacancyId}
+          method: put
+          cors: true
+      - http:
+          path: /vacancies/
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/pendingVacancy/
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/acceptedvacancy/
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/{vacancyId}
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/{vacancyId}
+          method: delete
+          cors: true
+      - http:
+          path: /vacancies/apply/
+          method: post
+          cors: true
+      - http:
+          path: /vacancies/apply
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/filterVacancies/{vacancyType}
+          method: get
+          cors: true
   consultantAPI:
     handler: Controller/consultants.handler
     events:
-        - http:
-            path: /consultants/add
-            method: post
-            cors: true
-        - http:
-            path: /consultants/list
-            method: get
-            cors: true
-        - http:
-            path: /consultants/view/{consultantId}
-            method: get
-            cors: true
-        - http:
-            path: /consultants/delete/{consultantId}
-            method: delete
-            cors: true
-        - http:
-            path: /consultants/update/{consultantId}
-            method: put
-            cors: true
-        
-       
+      - http:
+          path: /consultants/add
+          method: post
+          cors: true
+      - http:
+          path: /consultants/list
+          method: get
+          cors: true
+      - http:
+          path: /consultants/view/{consultantId}
+          method: get
+          cors: true
+      - http:
+          path: /consultants/delete/{consultantId}
+          method: delete
+          cors: true
+      - http:
+          path: /consultants/update/{consultantId}
+          method: put
+          cors: true
+  albumAPI:
+    handler: Controller/image-album.handler
+    events:
+      - http:
+          path: /image-album
+          method: post
+          cors: true
+      - http:
+          path: /image-album
+          method: get
+          cors: true
+      - http:
+          path: /image-album/{album_Id}
+          method: delete
+          cors: true
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
