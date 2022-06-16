@@ -1,4 +1,4 @@
-// const Vacancy = require('../Model/vacancies');
+
 // const mysql= require ('serverless-mysql');
 const mysql = require('../dbconfig');
 
@@ -13,14 +13,6 @@ async createVacancy (vacancy, company) {
     }
   });
   
-  let sql2 = "INSERT INTO company SET ?"; 
-
-  let result2 = mysql.query(sql2, company, (err) => {
-    if (err) {
-      throw err;
-    }
-  });
-
   if(result) {
     return {
       data: vacancy,
@@ -51,7 +43,6 @@ let result = await mysql.query({
 })
 
 if(result)  { 
-console.log(result);
 return result;
 }
   return "Error fetching vacancies from db"
@@ -127,9 +118,85 @@ async getAllLinks()  {
     return result;
   }
     return "Error fetching Linkedin links from db"
-}
+},
+
+//get all Government vacancies
+async getGovernmentVacancies()  {
+  let result = await mysql.query({
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1 AND vacancyType="Government"'
+  })
+
+  if(result)  {
+  
+    return result;
+
+  }
+    return "Error fetching vacancies from db"
+},
+
+//get all private vacancies
+async getPrivateVacancies()  {
+  let result = await mysql.query({
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1 AND vacancyType="Private"'
+  })
+
+  if(result)  {
+  
+    return result;
+
+  }
+    return "Error fetching vacancies from db"
+},
+
+//get all NGO vacancies
+async getNgoVacancies()  {
+  let result = await mysql.query({
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1 AND vacancyType="NGO"'
+  })
+
+  if(result)  {
+  
+    return result;
+
+  }
+    return "Error fetching vacancies from db"
+},
+
+//get all Internship vacancies
+async getInternshipVacancies()  {
+  let result = await mysql.query({
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1 AND vacancyType="Internship"'
+  })
+
+  if(result)  {
+  
+    return result;
+
+  }
+    return "Error fetching vacancies from db"
+},
+
+//get all Volunteer vacancies
+async getVolunteerVacancies()  {
+  let result = await mysql.query({
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1 AND vacancyType="Volunteer"'
+  })
+
+  if(result)  {
+  
+    return result;
+
+  }
+    return "Error fetching vacancies from db"
+},
 
 }
+
+
+
+
+
+
 
 
 // async getAllVacancies()  {
@@ -144,3 +211,10 @@ async getAllLinks()  {
 //     return "Error fetching vacancies from db"
 // },
  
+  // let sql2 = "INSERT INTO company SET ?"; 
+
+  // let result2 = mysql.query(sql2, company, (err) => {
+  //   if (err) {
+  //     throw err;
+  //   }
+  // });

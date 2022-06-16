@@ -25,13 +25,19 @@ app.post('/admins', async (req, res) => {
       let createUser=  await UserService.createUser(dataToSaveUser);
       let createAdmin=  await AdminService.createAdmin(dataToSaveAdmin);
 
+      
       if (createAdmin) {
-           return res.status(200).send(
-             createAdmin
-      )}
-    }catch (error) {
-      console.log(error, "error!!");
-    }
+        res.status(200).json({status : true, msg : "Success"});
+            createAdmin
+      }
+
+      else{
+        res.status(422).json({status : false, msg : "False"});
+     }
+}
+catch (error) {
+   console.log(error, "error!!");
+}    
 }),
 
 //get all administrators

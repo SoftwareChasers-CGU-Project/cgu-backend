@@ -16,25 +16,31 @@ app.post('/users/', async (req, res) => {
     try {
        const data  = req.body;
        const { email, undergradFName, undergradLName,faculty, batch, undergradPassword,phone_number} = data;
+
            if(!data) {
                return "Please pass all required fields!"
             }
   
        const dataToSaveUser = {email,phone_number};
-       const dataToSaveUnderg = {email,undergradFName, undergradLName,faculty, batch, undergradPassword};
+       const dataToSaveUnderg = {email,undergradFName, undergradLName,faculty,batch, undergradPassword};
 
        let createUser=  await UserService.createUser(dataToSaveUser);
        let createUnderg=  await UserService.createUndergraduate(dataToSaveUnderg);
-  
-       if (createUnderg) {
-           return res.status(200).send(
-                createUnderg
-       )}
-    }catch (error) {
-      //  handle errors here
-      console.log(error, "error!!");
+    
+        if (createUnderg) {
+            res.status(200).json({status : true, msg : "Success"});
+               createUnderg
+        }
+
+        else{
+            res.status(422).json({status : false, msg : "False"});
+         }
     }
+    catch (error) {
+       console.log(error, "error!!");
+    }    
 }),
+
 
 
 // app.get('/users/check/:email/', async (req, res) => {

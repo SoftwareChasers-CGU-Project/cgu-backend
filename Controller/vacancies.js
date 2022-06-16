@@ -83,11 +83,11 @@ app.get('/vacancies/', async (req, res) => {
   app.post('/vacancies/', async (req, res) => {
     try {
      const data  = req.body;
-     const {companyName, companyEmail, vacancyTitle, vacancyDesc, closingDate, poster} = data;
+     const {companyName, companyEmail, vacancyTitle, vacancyDesc, vacancyType, closingDate, poster} = data;
      if(!data) {
         return "Please pass all required fields!"
      }
-     const dataToVacancy = {companyName,companyEmail, vacancyTitle, vacancyDesc,closingDate,poster,VacancyId:uuidv4()};
+     const dataToVacancy = {companyName,companyEmail, vacancyTitle, vacancyDesc, vacancyType, closingDate, poster,VacancyId:uuidv4()};
      const dataToCompany = {companyEmail, companyName};
 
      let createVacancy =  await VacancyService.createVacancy(dataToVacancy, dataToCompany);
@@ -175,5 +175,72 @@ app.get('/vacancies/', async (req, res) => {
       }
   }),
 
+  //get all internship vacancies
+  app.get('/vacancies/filterVacancies/:vacancyType/', async (req, res) => {
+    try {
+      const vacancyType = req.params.vacancyType;
+
+    //  if(!data) {
+    //     return "Please pass all required fields!"
+    //  }
+  
+     console.log(vacancyType);
+
+    if(vacancyType == "Private")
+    {
+        const privateVacancies = await VacancyService.getPrivateVacancies();  
+        if (privateVacancies) {
+           return res.status(200).send({
+             data: privateVacancies   
+        })
+        }
+      }
+    else if(vacancyType == "Government"){
+        const governmentVacancies = await VacancyService.getGovernmentVacancies();  
+        if (governmentVacancies) {
+          return res.status(200).send({
+            data: governmentVacancies   
+          })
+        }
+    }
+    else if(vacancyType == "NGO"){
+      const ngoVacancies = await VacancyService.getNgoVacancies();  
+      if (ngoVacancies) {
+         return res.status(200).send({
+           data: ngoVacancies   
+         })
+      }
+    }
+    else if(vacancyType == "Internship"){
+        const intrnshipVacancies = await VacancyService.getInternshipVacancies();  
+        if (intrnshipVacancies) {
+          return res.status(200).send({
+            data: intrnshipVacancies   
+          })
+        }
+    }
+    else if(vacancyType == "Volunteer"){
+      const volunteerVacancies = await VacancyService.getVolunteerVacancies();  
+      if (volunteerVacancies) {
+        return res.status(200).send({
+          data: volunteerVacancies   
+        })
+      }
+    }
+    else{
+      const acceptedVacancies = await VacancyService.getAcceptedVacancies();  
+      if (acceptedVacancies) {
+        return res.status(200).send({
+          acceptedVacancies   
+        })
+      }
+    }
+
+    } catch (error) {
+        //  handle errors here
+        console.log(error, "error!!");
+    }
+  })
+
     
-    module.exports.handler = serverless(app);
+  module.exports.handler = serverless(app);

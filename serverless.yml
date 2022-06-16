@@ -169,6 +169,10 @@ functions:
         - http:
             path: /vacancies/apply
             method: get
+            cors: true
+        - http:
+            path: /vacancies/filterVacancies/{vacancyType}
+            method: get
             cors: true        
   consultantAPI:
     handler: Controller/consultants.handler

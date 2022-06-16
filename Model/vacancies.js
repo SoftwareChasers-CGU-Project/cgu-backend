@@ -12,4 +12,4 @@ class vacancies{
   }
 }
 
-module.exports = VacancyModel;
+module.exports = vacancies;
