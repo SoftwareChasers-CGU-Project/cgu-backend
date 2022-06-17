@@ -12,7 +12,7 @@
   "devDependencies": {
     "serverless-dotenv": "^1.0.0-beta.2",
     "serverless-dotenv-plugin": "^3.12.2",
-    "serverless-offline": "^8.3.1"
+    "serverless-offline": "^8.5.0"
   },
   "dependencies": {
     "body-parser": "^1.19.1",
