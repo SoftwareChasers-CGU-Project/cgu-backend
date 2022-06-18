@@ -20,6 +20,25 @@ async createSession (session) {
       return "Error creating new program"
 },
 
+async createCompany (company) {
+let sql = `INSERT INTO company SET companyName='${company.companyName}', companyEmail='${company.companyEmail}' ON DUPLICATE KEY UPDATE companyName='${company.companyName}', companyEmail='${company.companyEmail}'`
+              
+  let result =  mysql.query(sql, company, (err) => {
+    if (err) {
+      throw err;
+    }
+
+  });
+
+    if(result) {
+      return {
+        data: company,
+        message: "Company successfully created!"
+    };
+  }
+      return "Error creating new program"
+},
+
 
 async getAllPendingSession ()  {
   let sql = "SELECT * FROM comSessions where sessionStatus=0";
@@ -72,9 +91,18 @@ async viewSession(Id)  {
   return "Error fetching the program from db"
 },
 
+async viewCompany(Id)  {
+  var sql = `SELECT * FROM company WHERE companyEmail=?`;
+  let result = mysql.query(sql,Id);
+  if(result)  {
+    return result;
+  }
+  return "Error fetching the program from db"
+},
 
-async updateSession()  { 
-  var sql = `UPDATE comSessions SET sessionStatus=1`;
+
+async updateSession(session)  { 
+  var sql = `UPDATE comSessions SET sessionStatus=1 WHERE sessionId='${session.sessionId}'`;
   console.log(sql);
   let result =  mysql.query(sql, (err) => {
     if (err) {

@@ -104,33 +104,82 @@ functions:
           path: /programs/{programId}
           method: put
           cors: true
+      - http:
+            path: /programs/programType/{programCat}
+            method: get
+            cors: true
+        # - http:
+        #     path: /programs/department/
+        #     method: get
+        #     cors: true
+        
   com-sessionAPI:
     handler: Controller/com-sessions.handler
     events:
-      - http:
-          path: /comSessions/pending
-          method: get
-          cors: true
-      - http:
-          path: /comSessions/accepted
-          method: get
-          cors: true
-      - http:
-          path: /comSessions
-          method: post
-          cors: true
-      - http:
-          path: /comSessions/{sessionId}
-          method: put
-          cors: true
-      - http:
-          path: /comSessions/{sessionId}
-          method: delete
-          cors: true
-      - http:
-          path: /comSessions/{sessionId}
-          method: get
-          cors: true
+        - http:
+            path: /comSessions/pending
+            method: get
+            cors: true
+        - http:
+            path: /comSessions/accepted
+            method: get
+            cors: true
+        - http:
+            path: /comSessions
+            method: post
+            cors: true
+        - http:
+            path: /comSessions/{sessionId}
+            method: put
+            cors: true
+        - http:
+            path: /comSessions/{sessionId}
+            method: delete
+            cors: true
+        - http:
+            path: /comSessions/{sessionId}
+            method: get
+            cors: true
+        - http:
+            path: /company/{companyEmail}
+            method: get
+            cors: true
+  registerEventAPI:
+    handler: Controller/registerEvent.handler
+    events:
+        - http:
+            path: /registerEvent
+            method: post
+            cors: true
+        - http:
+            path: /registerEvent/{eventId}
+            method: get
+            cors: true
+  registerSessionAPI:
+    handler: Controller/registerSession.handler
+    events:
+        - http:
+            path: /registerSession
+            method: post
+            cors: true
+        - http:
+            path: /registerSession/{eventId}
+            method: get
+            cors: true
+        # - http:
+        #     path: /programs/{programId}
+        #     method: get
+        #     cors: true
+        # - http:
+        #     path: /programs/{programId}
+        #     method: delete
+        #     cors: true
+        # - http:
+        #     path: /programs/{programId}
+        #     method: put
+        #     cors: true
+
+      
   vacanciesAPI:
     handler: Controller/vacancies.handler
     events:         
@@ -212,7 +261,15 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
-
+  sendEmail:
+    handler: controller/email.sendEmail
+    events:
+      - http:
+          path: send-email
+          method: POST
+          cors: true
+        
+       
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
