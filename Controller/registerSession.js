@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-const Program= require('../Model/registerEvent');
+const Program= require('../Model/registerSession');
 const RegisterSessionService = require('../Services/registerSession');
 
 app.use(bodyParser.json());

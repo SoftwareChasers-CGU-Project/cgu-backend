@@ -1,4 +1,4 @@
-const Product= require ('../Model/registerEvent');
+const Product= require ('../Model/registerSession');
 const mysql = require('../dbconfig');
 
 module.exports = {
@@ -16,7 +16,6 @@ async addRegisterSession (register) {
   let check_sql=await mysql.query(`select * from undergraduates where email='${register.undergradEmail}'`)
   // console.log(check_sql[0]);
   if(check_sql[0]==null){
-    // console.log("hello");
     return;
   }  
  

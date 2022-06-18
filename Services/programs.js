@@ -22,14 +22,9 @@ async createProgram (program) {
 
 
 async getAllProgram ()  {
-  let sql = "SELECT * FROM programs";
+  let sql = "SELECT * FROM programs where programStatus=0";
   let result = mysql.query(sql);
-  
-  // let result =  mysql.query(sql, (err) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  // });
+  console.log("ALL")
   if(result)  {
     return result;
   }
@@ -58,7 +53,7 @@ async viewProgram(Id)  {
 
 
 async updateProgram(program)  { 
-  var sql = `UPDATE programs SET programName='${program.programName}',programDate='${program.programDate}',programCat='${program.programCat}', programDesc='${program.programDesc}', programImage='${program.programImage}'  WHERE programId='${program.programId}'`;
+  var sql = `UPDATE programs SET programName='${program.programName}',programDate='${program.programDate}',programTime='${program.programTime}',programCat='${program.programCat}', programDesc='${program.programDesc}', programImage='${program.programImage}'  WHERE programId='${program.programId}'`;
   // console.log(sql);
   let result =  mysql.query(sql, (err) => {
     if (err) {
@@ -73,6 +68,38 @@ async updateProgram(program)  {
   };
 }
     return "Error updating the program"
+},
+
+async getDepartmentEvents()  {
+  var sql = `SELECT * FROM programs WHERE programCat='Department Event' and programStatus=0`;
+  console.log(sql);
+  let result = mysql.query(sql);
+  if(result)  {
+    return result;
+  }
+  return "Error fetching the program from db"
+},
+
+async getCGUEvents()  {
+  var sql = `SELECT * FROM programs WHERE programCat='CGU Event' and programStatus=0`;
+  console.log(sql);
+  let result = mysql.query(sql);
+  if(result)  {
+    return result;
+  }
+  return "Error fetching the program from db"
+},
+
+async getWorkshops() {
+  var sql = `SELECT * FROM programs WHERE programCat='Workshop' and programStatus=0`;
+  console.log(sql);
+  let result = mysql.query(sql);
+  if(result)  {
+    return result;
+  }
+  return "Error fetching the program from db"
 }
+
+
 
 };

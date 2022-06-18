@@ -1,4 +1,4 @@
-class registerEvent {
+class registerSession {
     constructor(eventId,undergradEmail) {
         this.eventId=eventId;
         this.undergradEmail = undergradEmail;
@@ -6,4 +6,4 @@ class registerEvent {
     }
 }
 
-module.exports = registerEvent;
+module.exports = registerSession;

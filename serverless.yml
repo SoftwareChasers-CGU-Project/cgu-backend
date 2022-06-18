@@ -82,6 +82,15 @@ functions:
           path: /programs/{programId}
           method: put
           cors: true
+      - http:
+            path: /programs/programType/{programCat}
+            method: get
+            cors: true
+        # - http:
+        #     path: /programs/department/
+        #     method: get
+        #     cors: true
+        
   com-sessionAPI:
     handler: Controller/com-sessions.handler
     events:
@@ -218,7 +227,15 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
-
+  sendEmail:
+    handler: controller/email.sendEmail
+    events:
+      - http:
+          path: send-email
+          method: POST
+          cors: true
+        
+       
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
