@@ -87,27 +87,44 @@ app.get('/comSessions/pending', async (req, res) => {
  app.post('/comSessions', async (req, res) => {
   try {
    const data  = req.body;
-   const {sessionTopic,sessionDate,sessionDesc,TargetGroup,companyId} = data;
+   const {sessionTopic,sessionDate,sessionDesc,TargetGroup,companyName,companyEmail} = data;
   if(!data) {
      return "Please pass all required fields!"
   }
-   const dataToSave = {sessionTopic,sessionDate,sessionDesc,TargetGroup,companyId,sessionId:uuidv4()};
-   let createSession =  await SessionService.createSession(dataToSave);
+
+  // companyId:uuidv4();
+  const dataToSaveCompany = {companyName,companyEmail};
+  const dataToSaveSession = {sessionTopic,sessionDate,sessionDesc,TargetGroup,companyEmail,sessionId:uuidv4()};
+
+  let createCompany =  await SessionService.createCompany(dataToSaveCompany);
+  let createSession =  await SessionService.createSession(dataToSaveSession);
+   if (createCompany) {
+     return res.status(200).send(
+      createCompany
+    )
+  }
+  
+  
+
+  
+
+
    if (createSession) {
      return res.status(200).send(
       createSession
     )
-   }
+   } 
   } catch (error) {
     console.log(error, "error!!");
   }
- 
-}),
+
+  }),
 
   //  function for update a session
   app.put('/comSessions/:sessionId', async (req, res) => {
     try {
-    let updateSession =  await SessionService.updateSession();
+      
+    let updateSession =  await SessionService.updateSession(req.params);
     if (updateSession) {
       return res.status(200).send(
         updateSession
@@ -117,7 +134,24 @@ app.get('/comSessions/pending', async (req, res) => {
       console.log(error, "error!!");
     }
   
-  })
+  }),
+
+  app.get('/company/:companyEmail', async(req, res) => {
+    try {
+        const Id  = req.params.companyEmail;
+        const company = await SessionService.viewCompany(Id);
+        
+        if (company) {
+          return res.status(200).send(
+            company
+          )
+        }
+      } catch (error) {
+         console.log(error, "error!!");
+      }
+        
+    
+    }),
 
 
 
