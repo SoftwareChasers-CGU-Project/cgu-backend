@@ -83,11 +83,11 @@ app.get('/vacancies/', async (req, res) => {
   app.post('/vacancies/', async (req, res) => {
     try {
      const data  = req.body;
-     const {companyName, companyEmail, vacancyTitle, vacancyDesc, vacancyType, closingDate, poster} = data;
+     const {companyName, companyEmail, vacancyTitle, vacancyType, contractType, location, vacancyDesc, closingDate} = data;
      if(!data) {
         return "Please pass all required fields!"
      }
-     const dataToVacancy = {companyName,companyEmail, vacancyTitle, vacancyDesc, vacancyType, closingDate, poster,VacancyId:uuidv4()};
+     const dataToVacancy = {companyName,companyEmail, vacancyTitle, vacancyType, contractType, location, vacancyDesc, closingDate, VacancyId:uuidv4()};
      const dataToCompany = {companyEmail, companyName};
 
      let createVacancy =  await VacancyService.createVacancy(dataToVacancy, dataToCompany);

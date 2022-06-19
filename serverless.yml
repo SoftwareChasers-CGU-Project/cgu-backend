@@ -197,6 +197,13 @@ functions:
           path: /consultants/update/{consultantId}
           method: put
           cors: true
+  sendEmail:
+    handler: controller/vacancy-email.sendEmail
+    events:
+      - http:
+          path: send-email
+          method: POST
+          cors: true
   albumAPI:
     handler: Controller/image-album.handler
     events:
@@ -212,6 +219,7 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
+  
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

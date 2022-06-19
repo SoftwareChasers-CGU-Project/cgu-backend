@@ -64,7 +64,7 @@ return result;
 //get all pending vacancies
 async getPendingVacancies()  {
   let result = await mysql.query({
-    sql: 'SELECT * FROM vacancies where VacancyStatus=0'
+    sql: 'SELECT * FROM vacancies where VacancyStatus=0 order by closingDate'
   })
  
   if(result)  {
@@ -77,7 +77,7 @@ async getPendingVacancies()  {
 //get all accepted vacancies
 async getAcceptedVacancies()  {
   let result = await mysql.query({
-    sql: 'SELECT * FROM vacancies where VacancyStatus=1'
+    sql: 'SELECT * FROM vacancies where VacancyStatus=1 order by vacancyTitle'
   })
 
   if(result)  {
