@@ -5,7 +5,7 @@ async createConsultant (consultant) {
   let check_sql=await mysql.query(`select * from consultants where email='${consultant.email}'`)
   console.log(check_sql[0]);
   if(check_sql[0]!=null){
-    console.log("hello");
+    //console.log("hello");
     return;
   }  
  

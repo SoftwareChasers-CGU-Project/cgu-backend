@@ -103,10 +103,6 @@ app.get('/comSessions/pending', async (req, res) => {
       createCompany
     )
   }
-  
-  
-
-  
 
 
    if (createSession) {

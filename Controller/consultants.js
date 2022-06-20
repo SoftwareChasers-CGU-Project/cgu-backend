@@ -41,11 +41,19 @@ app.get('/consultants/list', async (req, res) => {
   }
    const dataToSave = {consultantFName,consultantLName,universityName, post, email,consultantId:uuidv4()};
    let createConsultant =  await ConsultantService.createConsultant(dataToSave);
+  //  if (createConsultant) {
+  //    return res.status(200).send(
+  //     createConsultant
+  //   )
+  //  }
    if (createConsultant) {
-     return res.status(200).send(
-      createConsultant
-    )
-   }
+    res.status(200).json({status : true, msg : "Success"});
+    createConsultant
+    
+  }
+  else{
+    res.status(422).json({status : false, msg : "False"});
+  } 
   } catch (error) {
     console.log(error, "error!!");
   }
