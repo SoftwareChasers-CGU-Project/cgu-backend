@@ -1,5 +1,6 @@
 const serverless = require('serverless-http');
 const express = require('express');
+const nodemailer = require("nodemailer");
 const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
@@ -8,6 +9,43 @@ const VacancyService = require('../Services/vacancies');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//Send linkedin profiles to companies 
+app.put('/vacancies/applyVacancies/:linkedin/', async (req, res) => {
+  try {
+    const linkedin = req.params.linkedin;
+    console.log(linkedin);
+    let details = await  VacancyService.getProfileDetails(linkedin);
+    // console.log(email[0].companyEmail)
+
+    var transporter = nodemailer.createTransport({
+      host: "smtp.mailtrap.io",
+      port: 2525,
+      auth: {
+        user: "81b84593f18680",
+        pass: "0f368be67351ed"
+      }
+    });
+    
+    let info = await transporter.sendMail({
+      from: '"Career Guidence Unit, Unversity of Moratuwa" <cgu.uom22@gmail.com>', 
+      to:details[0].companyEmail,
+      subject: "Regarding the vacancy published on website of Career Guidence Unit of University of Moratuwa", 
+      text: "Dear Sir/Madam",
+      html: "<p>Dear Sir/Madam,</p>Thank you for sending us your vacancy. This applicant named "+details[0].fullname+" have applied for your vacancy of " + details[0].vacancyTitle + " published on our website. Herewith, I have attached the LinkedIn profile Link of the undergraduates.<br> "+ details[0].linkedin+"</p><p>Yours Sincerely, <br> Mrs. kumari Gamage<br>Career Guidance Unit, <br>University of Moratuwa" ,
+    });
+   
+    if(details){
+      return res.status(200).send({
+        data: details
+    })
+    }
+    
+  } catch (error) {
+     //  handle errors here
+     console.log(error, "error!!");
+  }
+}),
 
 
 //get all linkdin profile links
@@ -107,18 +145,41 @@ app.get('/vacancies/', async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
       const acceptvacancy = await VacancyService.acceptVacancy(vacancyId);
-  
-      if(acceptvacancy) {
-          return res.status(200).send({
-            acceptvacancy
-          })
+      let email=await  VacancyService.getEmail(vacancyId);
+      console.log(email[0].companyEmail)
+
+      var transporter = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 2525,
+        auth: {
+          user: "81b84593f18680",
+          pass: "0f368be67351ed"
+        }
+      });
+      
+      let info = await transporter.sendMail({
+        from: '"Career Guidence Unit, Unversity of Moratuwa" <cgu.uom22@gmail.com>', 
+        to:email[0].companyEmail,
+        subject: "Regarding publishing a vacancy on website of Career Guidence Unit of University of Moratuwa", 
+        text: "Dear Sir/Madam",
+        html: "<p>Dear Sir/Madam,</p>Thank you for sending us your vacancy. We have published your vacancy of " + email[0].vacancyTitle + " on our website. We will send you the details of applicants in future.</p><p>Yours Sincerely, <br> Mrs. kumari Gamage<br>Career Guidance Unit, <br>University of Moratuwa" ,
+      });
+      
+      if(acceptvacancy){
+        return res.status(200).send({
+          data: acceptvacancy
+      })
       }
+      
     } catch (error) {
        //  handle errors here
        console.log(error, "error!!");
     }
   }),
-   
+
+
+
+ 
 //get a vacancy by Id
   app.get('/vacancies/:vacancyId/', async (req, res) => {
     try {
@@ -169,6 +230,11 @@ app.get('/vacancies/', async (req, res) => {
              return res.status(200).send(
                 apply
           )}
+
+          else{
+            res.status(422).json({status : false, msg : "False"});
+         }
+         
       }catch (error) {
         //  handle errors here
         console.log(error, "error!!");

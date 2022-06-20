@@ -91,6 +91,13 @@ async getAcceptedVacancies()  {
 
 //apply for a vacancy
 async applyVacancy(link) {
+  //check whether the user is registered
+  let check_sql=await mysql.query(`select * from users where email='${link.undergrad_email}'`)
+      console.log(check_sql[0]);
+        if(check_sql[0]==null){
+          return;
+        }  
+
   let sql = "INSERT INTO applyVacancies SET ?";
   let result = mysql.query(sql, link, (err) => {
     if (err) {
@@ -190,14 +197,36 @@ async getVolunteerVacancies()  {
     return "Error fetching vacancies from db"
 },
 
+async getEmail(vacancyId)  { 
+  let result = await mysql.query({
+    sql: 'SELECT  companyEmail, vacancyTitle from vacancies WHERE vacancyId= '+ mysql.escape(vacancyId)
+  })
+  // var sql = `SELECT  companyEmail from vacancies WHERE vacancyId='${vacancyId}'`;
+  // console.log(vacancyId);
+  // let result =  mysql.query(sql,vacancyId);
+  console.log(result);
+  JSON.parse(JSON.stringify(result)) 
+  if(result) {
+    return result;
+  }
+
+return "Error fetching the vacacny from db"
+},
+
+//get profile details
+async getProfileDetails(linkedin){ 
+  let result = await mysql.query({
+    sql: 'SELECT CONCAT( u.undergradFName, " ", u.undergradLName ) AS fullname,  v.vacancyTitle, v.companyName, v.companyEmail FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and a.undergrad_email = u.email and a.linkedin= '+ mysql.escape(linkedin)
+  })
+  
+  console.log(result);
+  JSON.parse(JSON.stringify(result)) 
+  if(result) {
+    return result;
+  }
+
 }
-
-
-
-
-
-
-
+}
 
 // async getAllVacancies()  {
 //   let result = await mysql.query({

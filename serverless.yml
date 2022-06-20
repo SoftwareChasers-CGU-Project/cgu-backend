@@ -133,7 +133,11 @@ functions:
           cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events:         
+    events: 
+      - http:
+          path: /vacancies/applyVacancies/{linkedin}
+          method: put
+          cors: true        
       - http:
           path: /vacancies/
           method: post
@@ -196,13 +200,6 @@ functions:
       - http:
           path: /consultants/update/{consultantId}
           method: put
-          cors: true
-  sendEmail:
-    handler: controller/vacancy-email.sendEmail
-    events:
-      - http:
-          path: send-email
-          method: POST
           cors: true
   albumAPI:
     handler: Controller/image-album.handler
