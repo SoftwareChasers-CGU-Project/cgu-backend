@@ -201,15 +201,23 @@ async getEmail(vacancyId)  {
   let result = await mysql.query({
     sql: 'SELECT  companyEmail, vacancyTitle from vacancies WHERE vacancyId= '+ mysql.escape(vacancyId)
   })
-  // var sql = `SELECT  companyEmail from vacancies WHERE vacancyId='${vacancyId}'`;
-  // console.log(vacancyId);
-  // let result =  mysql.query(sql,vacancyId);
   console.log(result);
   JSON.parse(JSON.stringify(result)) 
   if(result) {
     return result;
   }
+return "Error fetching the vacacny from db"
+},
 
+async getRejectEmail(vacancyId)  { 
+  let result = await mysql.query({
+    sql: 'SELECT  companyEmail, vacancyTitle from vacancies WHERE vacancyId= '+ mysql.escape(vacancyId)
+  })
+  console.log(result);
+  JSON.parse(JSON.stringify(result)) 
+  if(result) {
+    return result;
+  }
 return "Error fetching the vacacny from db"
 },
 

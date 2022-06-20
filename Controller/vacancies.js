@@ -10,43 +10,6 @@ const VacancyService = require('../Services/vacancies');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Send linkedin profiles to companies 
-app.put('/vacancies/applyVacancies/:linkedin/', async (req, res) => {
-  try {
-    const linkedin = req.params.linkedin;
-    console.log(linkedin);
-    let details = await  VacancyService.getProfileDetails(linkedin);
-    // console.log(email[0].companyEmail)
-
-    var transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
-      port: 2525,
-      auth: {
-        user: "81b84593f18680",
-        pass: "0f368be67351ed"
-      }
-    });
-    
-    let info = await transporter.sendMail({
-      from: '"Career Guidence Unit, Unversity of Moratuwa" <cgu.uom22@gmail.com>', 
-      to:details[0].companyEmail,
-      subject: "Regarding the vacancy published on website of Career Guidence Unit of University of Moratuwa", 
-      text: "Dear Sir/Madam",
-      html: "<p>Dear Sir/Madam,</p>Thank you for sending us your vacancy. This applicant named "+details[0].fullname+" have applied for your vacancy of " + details[0].vacancyTitle + " published on our website. Herewith, I have attached the LinkedIn profile Link of the undergraduates.<br> "+ details[0].linkedin+"</p><p>Yours Sincerely, <br> Mrs. kumari Gamage<br>Career Guidance Unit, <br>University of Moratuwa" ,
-    });
-   
-    if(details){
-      return res.status(200).send({
-        data: details
-    })
-    }
-    
-  } catch (error) {
-     //  handle errors here
-     console.log(error, "error!!");
-  }
-}),
-
 
 //get all linkdin profile links
 app.get('/vacancies/apply', async (req, res) => {
@@ -203,7 +166,9 @@ app.get('/vacancies/', async (req, res) => {
     try {
         const vacancyId = req.params.vacancyId;
         const deletevacancy = await VacancyService.deleteVacancy(vacancyId);
-    
+        console.log(vacancyId);
+        
+
         if(deletevacancy) {
            return res.status(200).send({
               deletevacancy
@@ -214,6 +179,8 @@ app.get('/vacancies/', async (req, res) => {
          console.log(error, "error!!");
       }
   }),
+
+
 
 
   //apply for a vacancy
@@ -306,7 +273,8 @@ app.get('/vacancies/', async (req, res) => {
         //  handle errors here
         console.log(error, "error!!");
     }
-  })
+  }),
 
+  
     
   module.exports.handler = serverless(app);

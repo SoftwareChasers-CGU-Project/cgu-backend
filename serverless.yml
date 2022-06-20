@@ -136,7 +136,7 @@ functions:
     events: 
       - http:
           path: /vacancies/applyVacancies/{linkedin}
-          method: put
+          method: get
           cors: true        
       - http:
           path: /vacancies/
