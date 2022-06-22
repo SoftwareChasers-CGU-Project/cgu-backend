@@ -265,7 +265,7 @@ functions:
     handler: Controller/consultation.handler
     events:
       - http:
-          path: /consultationReq/add
+          path: /consultationReq/add/{consultantId}
           method: post
           cors: true
       - http:
