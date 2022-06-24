@@ -58,7 +58,12 @@ provider:
 #    - include-me.js
 #    - include-me-dir/**
 
+
 functions:
+#   runCronJob : 
+#     handler: handler.run
+#     events : 
+#      - schedule : cron(0 00 * * *)
   programAPI:
     handler: Controller/programs.handler
     events:
@@ -68,6 +73,10 @@ functions:
           cors: true
       - http:
           path: /programs
+          method: get
+          cors: true
+      - http:
+          path: /programs/past
           method: get
           cors: true
       - http:
@@ -86,16 +95,16 @@ functions:
             path: /programs/programType/{programCat}
             method: get
             cors: true
-        # - http:
-        #     path: /programs/department/
-        #     method: get
-        #     cors: true
         
   com-sessionAPI:
     handler: Controller/com-sessions.handler
     events:
         - http:
             path: /comSessions/pending
+            method: get
+            cors: true
+        - http:
+            path: /comSessions/past
             method: get
             cors: true
         - http:
@@ -144,20 +153,6 @@ functions:
             path: /registerSession/{eventId}
             method: get
             cors: true
-        # - http:
-        #     path: /programs/{programId}
-        #     method: get
-        #     cors: true
-        # - http:
-        #     path: /programs/{programId}
-        #     method: delete
-        #     cors: true
-        # - http:
-        #     path: /programs/{programId}
-        #     method: put
-        #     cors: true
-
-      
   vacanciesAPI:
     handler: Controller/vacancies.handler
     events:
