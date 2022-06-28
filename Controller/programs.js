@@ -6,22 +6,25 @@ const { v4: uuidv4 } = require('uuid');
 uuidv4();
 const Program= require('../Model/programs');
 const ProgramService = require('../Services/programs');
+const nodemailer = require("nodemailer");
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const multer  = require('multer');
+const registerEventService = require('../Services/registerEvent');
 const upload = multer({ dest: 'uploads/' });
 
 
 //  function for getting all programs
-app.get('/programs/', async (req, res) => {
+app.get('/programs/past', async (req, res) => {
   try {
-      const allPrograms = await ProgramService.getAllProgram();
-      const all= await allPrograms;
-      if (all) {
+      const allPrograms = await ProgramService.getAllPastProgram();
+      const allPast= await allPrograms;
+      if (allPast) {
         return res.status(200).send(
-          all
+          allPast
         )
       }
     } catch (error) {
@@ -34,59 +37,42 @@ app.get('/programs/', async (req, res) => {
 app.get('/programs/programType/:programCat', async (req, res) => {
   try {
     const programCat = req.params.programCat;
+    console.log(programCat);
 
-  //  if(!data) {
-  //     return "Please pass all required fields!"
-  //  }
-
-   console.log(programCat);
-
-  if(programCat == "Department")
-  {
-      const DepartmentEvents = await ProgramService.getDepartmentEvents();  
-      if (DepartmentEvents) {
-      //  DepartmentEvents= JSON.parse(DepartmentEvents)
-         return res.status(200).send(
-          DepartmentEvents   
-      )
+    if(programCat == "Department")
+    {
+        const DepartmentEvents = await ProgramService.getDepartmentEvents();  
+        if (DepartmentEvents) {
+          return res.status(200).send(
+            DepartmentEvents   
+        )
+        }
       }
+    else if(programCat == "CGU"){
+        const CGUEvents = await ProgramService.getCGUEvents();  
+        if (CGUEvents) {
+          return res.status(200).send(
+            CGUEvents   
+          )
+        }
     }
-  else if(programCat == "CGU"){
-      const CGUEvents = await ProgramService.getCGUEvents();  
-      if (CGUEvents) {
+    else if(programCat == "Workshops"){
+      const Workshops = await ProgramService.getWorkshops();  
+      if (Workshops) {
         return res.status(200).send(
-          CGUEvents   
+          Workshops   
         )
       }
-  }
-  else if(programCat == "Workshops"){
-    const Workshops = await ProgramService.getWorkshops();  
-    if (Workshops) {
-       return res.status(200).send(
-        Workshops   
-       )
     }
-  }
-  else if(programCat == "false"){
-    const Programs = await ProgramService.getAllProgram();  
-    if (Programs) {
-       return res.status(200).send(
-        Programs   
-       )
+    else if(programCat == "false"){
+      const Programs = await ProgramService.getAllProgram();  
+      if (Programs) {
+        return res.status(200).send(
+          Programs   
+        )
+      }
     }
-  }
-  
-  // else{
-  //   const Programs = await ProgramService.getAllProgram ();  
-  //   if (Programs) {
-  //     return res.status(200).send({
-  //       Programs  
-  //     })
-  //   }
-  // }
-
   } catch (error) {
-      //  handle errors here
       console.log(error, "error!!");
   }
 });
@@ -96,8 +82,42 @@ app.get('/programs/programType/:programCat', async (req, res) => {
   app.delete('/programs/:programId', async(req, res) => {
     try {
         const Id  = req.params.programId;
+        const underGrads=await registerEventService.getEmails(Id);
+        const programDetails=await ProgramService.viewProgram(Id);
         const program = await ProgramService.deleteProgram(Id);
+        console.log(programDetails)
+
+        var dateArr = programDetails[0].programDate.toString().slice(4,15);
+        var emailStrings = "";
+        console.log(dateArr)
+
+        for (let index = 0; index < underGrads.length; index++) {
+          emailStrings += (underGrads.length-1) == index ? underGrads[0].undergradEmail : underGrads[0].undergradEmail  + ",";
+        }
         
+        console.log(emailStrings);
+        if(underGrads[0]!=null){
+          var transporter = nodemailer.createTransport({
+            host: "smtp.mailtrap.io",
+            port: 2525,
+            auth: {
+              user: "8030025c130717",
+              pass: "92144cf4b2d238"
+            }
+          });
+       
+          
+        let info = await transporter.sendMail({
+          from: ' <cgu.uom22@gmail.com>', 
+          to:emailStrings,
+          subject:"Regarding the session Request | "+ programDetails[0].programName, 
+          html: "<p>Dr Student,</p><p>The program on topic " + programDetails[0].programName +" that is held to be on "  + dateArr+" is cancelled.</p><p>Thank you</p>Career Guidance Unit,<br><p>University of Moratuwa</p>",
+        });
+  
+        }
+
+        
+           
         if (program) {
           return res.status(200).send(
             
@@ -167,51 +187,6 @@ app.get('/programs/programType/:programCat', async (req, res) => {
       }
  
     });
-
-
-
-    //  function for getting all department events
-    // app.get('/programs-department/all', async (req, res) => {
-    //   try {
-    //     const departmentEvents = await ProgramService.getDepartmentEvents() ;
-    //     // const all= await allPrograms;
-    //     if (departmentEvents) {
-    //       return res.status(200).send(
-    //         departmentEvents
-    //       )
-    //     }
-    //   } catch (error) {
-    //      console.log(error, "error!!");
-    //   }
-    // });
-
-    // app.get('/programs-CGU/all', async (req, res) => {
-    //   try {
-    //     const departmentEvents = await ProgramService.getCGUEvents() ;
-    //     // const all= await allPrograms;
-    //     if (departmentEvents) {
-    //       return res.status(200).send(
-    //         departmentEvents
-    //       )
-    //     }
-    //   } catch (error) {
-    //      console.log(error, "error!!");
-    //   }
-    // });
-
-    // app.get('/programs-workshop/all', async (req, res) => {
-    //   try {
-    //     const departmentEvents = await ProgramService.getWorkshops() ;
-    //     // const all= await allPrograms;
-    //     if (departmentEvents) {
-    //       return res.status(200).send(
-    //         departmentEvents
-    //       )
-    //     }
-    //   } catch (error) {
-    //      console.log(error, "error!!");
-    //   }
-    // });
 
 
 module.exports.handler = serverless(app);
