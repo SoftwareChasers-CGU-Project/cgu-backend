@@ -135,7 +135,7 @@ functions:
     handler: Controller/vacancies.handler
     events: 
       - http:
-          path: /vacancies/applyVacancies/{linkedin}
+          path: /vacancies/applyVacancies/{id}
           method: get
           cors: true        
       - http:
