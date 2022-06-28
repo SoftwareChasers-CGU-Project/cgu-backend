@@ -6,48 +6,45 @@ const { v4: uuidv4 } = require('uuid');
 uuidv4();
 const Program= require('../Model/registerEvent');
 const RegisterService = require('../Services/registerEvent');
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-    app.get('/registerEvent/:eventId', async(req, res) => {
-      try {
-          const Id  = req.params.eventId;
-          const underGrads = await RegisterService.getUndergraduates(Id);
+app.get('/registerEvent/:eventId', async(req, res) => {
+  try {
+    const Id  = req.params.eventId;
+    const underGrads = await RegisterService.getUndergraduates(Id);
           
-          if ( underGrads) {
-            return res.status(200).send(
-              underGrads
-            )
-          }
-        } catch (error) {
-           console.log(error, "error!!");
-        }
+    if ( underGrads) {
+      return res.status(200).send(
+        underGrads
+      )
+    }
+    } catch (error) {
+      console.log(error, "error!!");
+    }
           
       
-    }),
+}),
 
 
-    app.post('/registerEvent', async (req, res) => {
-      // console.log(req.body);
-      try {
-        let registerEvent =  await RegisterService.addRegisterEvent(req.body);
-        if (registerEvent) {
-          res.status(200).json({status : true, msg : "Success"});
-            registerEvent
+app.post('/registerEvent', async (req, res) => {
+  try {
+    let registerEvent =  await RegisterService.addRegisterEvent(req.body);
+    if (registerEvent) {
+      res.status(200).json({status : true, msg : "Success"});
+        registerEvent
           
-        }
-        else{
-          res.status(422).json({status : false, msg : "False"});
-        } }
-      catch (error) {
-        console.log(error, "error!!");
-      }
+    }
+    else{
+      res.status(422).json({status : false, msg : "False"});
+    } }
+    catch (error) {
+      console.log(error, "error!!");
+    }
     
-    })
+})
 
     
     

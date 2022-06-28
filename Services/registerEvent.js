@@ -13,9 +13,9 @@ module.exports = {
 
 async addRegisterEvent (register) {
   let check_sql=await mysql.query(`select * from undergraduates where email='${register.undergradEmail}'`)
-  // console.log(check_sql[0]);
+ 
+  
   if(check_sql[0]==null){
-    // console.log("hello");
     return;
   }  
  
@@ -35,7 +35,16 @@ async addRegisterEvent (register) {
     };
   }
 return "Error creating new Consultant"
-}
+},
+
+async getEmails(Id)  {
+  var sql = `select undergradEmail from undergraduateEventRegistration where eventId ='${Id}'`;
+  let result = mysql.query(sql,Id);
+  if(result)  {
+    return result;
+  }
+  return "Error fetching the program from db"
+},
 
 
 

@@ -22,7 +22,17 @@ async createProgram (program) {
 
 
 async getAllProgram ()  {
-  let sql = "SELECT * FROM programs where programStatus=0";
+  let sql = "SELECT * FROM programs where programStatus=0 ORDER BY programDate ASC";
+  let result = mysql.query(sql);
+  console.log("ALL")
+  if(result)  {
+    return result;
+  }
+  return "Error fetching products from db"
+},
+
+async getAllPastProgram ()  {
+  let sql = "SELECT * FROM programs where programStatus=1 ORDER BY programDate ASC";
   let result = mysql.query(sql);
   console.log("ALL")
   if(result)  {
@@ -54,7 +64,6 @@ async viewProgram(Id)  {
 
 async updateProgram(program)  { 
   var sql = `UPDATE programs SET programName='${program.programName}',programDate='${program.programDate}',programTime='${program.programTime}',programCat='${program.programCat}', programDesc='${program.programDesc}', programImage='${program.programImage}'  WHERE programId='${program.programId}'`;
-  // console.log(sql);
   let result =  mysql.query(sql, (err) => {
     if (err) {
       throw err;
@@ -71,7 +80,7 @@ async updateProgram(program)  {
 },
 
 async getDepartmentEvents()  {
-  var sql = `SELECT * FROM programs WHERE programCat='Department Event' and programStatus=0`;
+  var sql = `SELECT * FROM programs WHERE programCat='Department Event' and programStatus=0 ORDER BY programDate ASC`;
   console.log(sql);
   let result = mysql.query(sql);
   if(result)  {
@@ -81,7 +90,7 @@ async getDepartmentEvents()  {
 },
 
 async getCGUEvents()  {
-  var sql = `SELECT * FROM programs WHERE programCat='CGU Event' and programStatus=0`;
+  var sql = `SELECT * FROM programs WHERE programCat='CGU Event' and programStatus=0 ORDER BY programDate ASC`;
   console.log(sql);
   let result = mysql.query(sql);
   if(result)  {
@@ -91,7 +100,7 @@ async getCGUEvents()  {
 },
 
 async getWorkshops() {
-  var sql = `SELECT * FROM programs WHERE programCat='Workshop' and programStatus=0`;
+  var sql = `SELECT * FROM programs WHERE programCat='Workshop' and programStatus=0 ORDER BY programDate ASC`;
   console.log(sql);
   let result = mysql.query(sql);
   if(result)  {

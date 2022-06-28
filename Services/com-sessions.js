@@ -4,6 +4,7 @@ const mysql = require('../dbconfig');
 module.exports = {
 async createSession (session) {
   let sql = "INSERT INTO comSessions SET ?";
+  console.log(sql)
   let result =  mysql.query(sql, session, (err) => {
     if (err) {
       throw err;
@@ -21,9 +22,16 @@ async createSession (session) {
 },
 
 async createCompany (company) {
-let sql = `INSERT INTO company SET companyName='${company.companyName}', companyEmail='${company.companyEmail}' ON DUPLICATE KEY UPDATE companyName='${company.companyName}', companyEmail='${company.companyEmail}'`
-              
-  let result =  mysql.query(sql, company, (err) => {
+  let check_sql=await mysql.query(`select companyName from company where companyEmail='${company.companyEmail}'`)
+  
+  if(check_sql[0].companyName!==company.companyName){
+    console.log("not equal");
+    return;
+  }
+    
+  let sql = `INSERT INTO company SET companyName='${company.companyName}', companyEmail='${company.companyEmail}' ON DUPLICATE KEY UPDATE companyName='${company.companyName}', companyEmail='${company.companyEmail}'`
+  console.log(sql)            
+  let result = mysql.query(sql, company, (err) => {
     if (err) {
       throw err;
     }
@@ -33,22 +41,16 @@ let sql = `INSERT INTO company SET companyName='${company.companyName}', company
     if(result) {
       return {
         data: company,
-        message: "Company successfully created!"
+        message: "company successfully created!"
     };
   }
-      return "Error creating new program"
+return "Error creating new Company"
 },
-
-
-async getAllPendingSession ()  {
-  let sql = "SELECT * FROM comSessions where sessionStatus=0";
-  let result = mysql.query(sql);
   
-  // let result =  mysql.query(sql, (err) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  // });
+async getAllPendingSession ()  {
+  let sql = "SELECT * FROM comSessions where sessionStatus=0 and sessionTimeStatus=0 ORDER BY sessionDate ASC";
+  let result = mysql.query(sql);
+ 
   if(result)  {
     return result;
   }
@@ -57,20 +59,24 @@ async getAllPendingSession ()  {
 
 
 async getAllAcceptedSession ()  {
-  let sql = "SELECT * FROM comSessions where sessionStatus=1";
+  let sql = "SELECT * FROM comSessions where sessionStatus=1 and sessionTimeStatus=0 ORDER BY sessionDate ASC";
   let result = mysql.query(sql);
-  
-  // let result =  mysql.query(sql, (err) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  // });
+
   if(result)  {
     return result;
   }
   return "Error fetching products from db"
 },
 
+async getAllPastComsessions ()  {
+  let sql = "SELECT * FROM comSessions where sessionTimeStatus=1 ORDER BY sessionDate ASC";
+  let result = mysql.query(sql);
+  
+  if(result)  {
+    return result;
+  }
+  return "Error fetching products from db"
+},
 
 async deleteSession(Id)  {
   
@@ -102,7 +108,7 @@ async viewCompany(Id)  {
 
 
 async updateSession(session)  { 
-  var sql = `UPDATE comSessions SET sessionStatus=1 WHERE sessionId='${session.sessionId}'`;
+  var sql = `UPDATE comSessions SET sessionStatus=1 WHERE sessionId='${session}'`;
   console.log(sql);
   let result =  mysql.query(sql, (err) => {
     if (err) {
@@ -117,6 +123,22 @@ async updateSession(session)  {
   };
 }
     return "Error updating the program"
-}
+},
+
+async getEmail(id)  { 
+  var sql = `SELECT  companyEmail,sessionTopic,sessionDate from comSessions WHERE sessionId='${id}'`;
+  console.log(sql);
+  let result =  mysql.query(sql,id);
+  JSON.parse(JSON.stringify(result))
+
+  if(result) {
+    return result;
+  }
+
+return "Error fetching the program from db"
+},
+    
+
+
 
 };
