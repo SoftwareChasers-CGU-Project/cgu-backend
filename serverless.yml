@@ -71,6 +71,28 @@ functions:
           path: /generateJWTToken
           method: post
           cors: true
+  UserRegistrationAPI:
+    handler: Controller/users.handler
+    events:
+        - http:
+            path: /users
+            method: post
+            cors: true
+        - http:
+            path: /users/check/{email}
+            method: get
+            cors: true
+  AdminRegistrationAPI:
+    handler: Controller/admins.handler
+    events:
+        - http:
+            path: /admins
+            method: post
+            cors: true
+        - http:
+            path: /admins
+            method: get
+            cors: true
   programAPI:
     handler: Controller/programs.handler
     events:
@@ -162,7 +184,7 @@ functions:
             cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events:
+    events:         
       - http:
           path: /vacancies/
           method: post
@@ -190,6 +212,18 @@ functions:
       - http:
           path: /vacancies/{vacancyId}
           method: delete
+          cors: true
+      - http:
+          path: /vacancies/apply/
+          method: post
+          cors: true
+      - http:
+          path: /vacancies/apply
+          method: get
+          cors: true
+      - http:
+          path: /vacancies/filterVacancies/{vacancyType}
+          method: get
           cors: true
   consultantAPI:
     handler: Controller/consultants.handler
