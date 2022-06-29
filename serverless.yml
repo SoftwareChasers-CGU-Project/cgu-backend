@@ -186,6 +186,56 @@ functions:
           path: /image-album/{album_Id}
           method: put
           cors: true
+      - http:
+          path: /image-album/upload
+          method: post
+          cors: true
+      - http:
+          path: /image-album/upload
+          method: get
+          cors: true
+  satisfactionAPI:
+    handler: Controller/satisfaction.handler
+    events:
+      - http:
+          path: /satisfaction
+          method: post
+          cors: true
+  authenticationAPI:
+    handler: Controller/user-login.handler
+    events:
+      - http:
+          path: /auth/users/list
+          method: get
+          cors: true
+      - http:
+          path: /auth/posts
+          method: post
+          cors: true
+      - http:
+          path: /auth/login
+          method: post
+          cors: true
+      - http:
+          path: /admin/auth/login
+          method: post
+          cors: true
+      - http:
+          path: /auth/users/{email}
+          method: get
+          cors: true
+      - http:
+          path: /auth/token
+          method: post
+          cors: true
+      - http:
+          path: /auth/logout
+          method: delete
+          cors: true
+      - http:
+          path: /admin/auth/logout
+          method: delete
+          cors: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
