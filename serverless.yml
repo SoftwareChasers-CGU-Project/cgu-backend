@@ -180,7 +180,11 @@ functions:
             cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events:         
+    events: 
+      - http:
+          path: /vacancies/applyVacancies/{id}
+          method: get
+          cors: true        
       - http:
           path: /vacancies/
           method: post
@@ -259,6 +263,7 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
+  
 
       - http:
           path: /image-album/{album_Id}
