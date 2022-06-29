@@ -30,7 +30,7 @@ app.use(function(req, res, next) {
 // const headerOptions = { headers: { Accept: 'application/json' } }
 
 app.get('/image-album/', async(req, res) => {
-        try {sachiniExternal/userController.js
+        try {
 
             const allAlbums = await AlbumService.getListOfAlbums();
             const albumData = await allAlbums;

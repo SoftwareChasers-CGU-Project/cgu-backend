@@ -6,7 +6,7 @@ const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
 
-const users = require('../Model/user-login')
+// const users = require('../Model/user-login')
 
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -27,22 +27,11 @@ app.use(function(req, res, next) {
     next();
 });
 
-// const posts = [{
-//         username: 'Kyle',
-//         password: 'Post 1'
-//     },
-//     {
-//         username: 'Jim',
-//         password: 'Post 2'
-//     }
-// ]
-
 let refreshToken = []
 
 // app.get('/auth/posts', authenticateToken, (req, res) => {
 //     res.json(users.filter(user => user.email === req.user.email))
 // })
-
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -161,29 +150,32 @@ app.get('/auth/users/list', async(req, res) => {
                     data: 'user has not registered'
                 })
             }
-            console.log(`before is match`)
+
             const isMatch = await userLoginService.isValidPassword(userEmail, userPassword);
 
-
-            // const passwordHash = userLoginService.viewPassword(userEmail).toString();
-            // const isMatch = bcrypt.compare(userPassword, passwordHash)
-
-            console.log(isMatch);
-            console.log(`after is match`)
-            console.log(`before if`)
             if (!isMatch) {
                 return res.status(200).send({
                     data: 'email password mismatch'
                 })
             }
 
-            const accessToken = await signAccessToken(email);
+            const accessToken = await signAccessToken(userEmail);
             console.log(accessToken);
             console.log('hi')
-            const refreshToken = await signRefreshToken(email);
+            const refreshToken = await signRefreshToken(userEmail);
             console.log(refreshToken);
 
-            res.send({ accessToken, refreshToken })
+
+            if (accessToken) {
+                return res.status(200).send({
+                    data: ({ accessToken, refreshToken })
+                })
+            }
+
+            // res.send({ accessToken, refreshToken })
+
+
+
         } catch (error) {
             if (error.isJoi === true)
                 return next(createError.BadRequest('Invalid Username/Password'))

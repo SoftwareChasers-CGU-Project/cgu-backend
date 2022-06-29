@@ -3,14 +3,14 @@ const createError = require('http-errors')
     // const client = require('./init_redis')
 
 module.exports = {
-    signAccessToken: (userId) => {
+    signAccessToken: (userEmail) => {
         return new Promise((resolve, reject) => {
             const payload = {}
             const secret = process.env.ACCESS_TOKEN_SECRET
             const options = {
                 expiresIn: '1h',
-                issuer: 'pickurpage.com',
-                audience: userId,
+                // issuer: 'pickurpage.com',
+                audience: userEmail,
             }
             JWT.sign(payload, secret, options, (err, token) => {
                 if (err) {
