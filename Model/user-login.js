@@ -1,8 +1,8 @@
-class login {
+class undergraduate {
     constructor(email, password) {
         this.email = email;
         this.password = password;
     }
 }
 
-module.exports = login;
+module.exports = undergraduate;

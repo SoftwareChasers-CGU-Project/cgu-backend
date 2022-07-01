@@ -6,7 +6,7 @@ const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
 
-// const users = require('../Model/user-login')
+const undergraduate = require('../Model/user-login')
 
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -38,67 +38,63 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split('')[1]
     if (token == null) return res.sendStatus(401)
 
-    jwt.verify(token.process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token.process.env.ACCESS_TOKEN_SECRET, (err, undergraduate) => {
         if (err) return res.sendStatus(401)
-        req.user = user;
+        req.undergraduate = undergraduate;
         next()
     })
 
 }
 
 
-// app.post('/auth/token', (req, res) => {
-//     const refreshToken = req.body.token;
-//     if (refreshToken == null)
-//         return res.sendStatus(401)
-//     if (refreshToken.includes(refreshToken))
-//         return res.sendStatus(403)
-//     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-//         if (err) return res.sendStatus(403)
-//         const accessToken = generateAccessToken({ name: user.name })
-//         res.json({ accessToken: accessToken })
-//     })
-// })
+app.post('/auth/token', (req, res) => {
+    const refreshToken = req.body.token;
+    if (refreshToken == null)
+        return res.sendStatus(401)
+    if (refreshToken.includes(refreshToken))
+        return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        const accessToken = generateAccessToken({ em: user.name })
+        res.json({ accessToken: accessToken })
+    })
+})
+
+
 
 function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expirationIn: "15s" })
 }
 
 
-app.delete('/auth/logout', (req, res) => {
-    refreshToken = refreshToken.filter(token => token !== req.body.token)
-    res.sendStatus(200)
-})
+
+// app.delete('/auth/logout', (req, res) => {
+//     refreshToken = refreshToken.filter(token => token !== req.body.token)
+//     res.sendStatus(200)
+// }),
 
 
-// app.delete('/auth/logout', async(req, res, next) => {
-//     try {
-//         const { refreshToken } = req.body;
-//         console.log(refreshToken)
-//         if (!refreshToken) {
-//             return res.status(200).send({
-//                 data: 'refresh Token not passed'
-//             })
-//         }
-//         // throw createError.BadRequest()
-//         const userId = await verifyRefreshToken(refreshToken);
-//         console.log(userId);
-
-//         client.DEL(userId, (err, val) => {
-//             if (err) {
-//                 console.log(err.message)
-//                 throw createError.InternalServerError()
-//             }
-//             console.log(val)
-//             res.sendStatus(204)
-//         })
-//     } catch (error) {
-//         next(error)
-//     }
-// })
+app.delete('/auth/logout', async(req, res, next) => {
+        try {
+            const { refreshToken } = req.body
+            if (!refreshToken) throw createError.BadRequest()
+            const email = await verifyRefreshToken(refreshToken)
+            console.log('email')
+            client.DEL(email, (err, val) => {
+                if (err) {
+                    console.log(err.message)
+                    throw createError.InternalServerError()
+                }
+                console.log(val)
+                res.sendStatus(204)
+            })
+        } catch (error) {
+            next(error)
+        }
+    }),
 
 
-app.get('/auth/users/list', async(req, res) => {
+    app.get('/auth/users/all', async(req, res) => {
         try {
             const result = await userLoginService.viewUsers();
             console.log(result);
@@ -111,31 +107,6 @@ app.get('/auth/users/list', async(req, res) => {
             console.log(e)
         }
     }),
-
-
-    // ---------------------------------------------------------
-
-    //     app.get('/auth/users/:email', async(req, res) => {
-    //         try {
-    //             const userEmail = req.params.password;
-    //             const result = await userLoginService.viewPassword(userEmail);
-    //             const email = result[0].password;
-    //             if (!email) throw createError.NotFound('User does not exists');
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //     })
-
-    // app.get('/auth/users/:password', async(req, res) => {
-    //         try {
-    //             const userPassword = req.params.password;
-    //             const result = await userLoginService.viewPassword(userPassword);
-    //             const password = result[0].password;
-    //             if (!password) throw createError.NotFound('Password does not exists');
-    //         } catch (e) {
-    //             console.log(e);
-    //         }
-    //     }),
 
 
 
@@ -151,13 +122,13 @@ app.get('/auth/users/list', async(req, res) => {
                 })
             }
 
-            const isMatch = await userLoginService.isValidPassword(userEmail, userPassword);
+            // const isMatch = await userLoginService.isValidPassword(userEmail, userPassword);
 
-            if (!isMatch) {
-                return res.status(200).send({
-                    data: 'email password mismatch'
-                })
-            }
+            // if (!isMatch) {
+            //     return res.status(200).send({
+            //         data: 'email password mismatch'
+            //     })
+            // }
 
             const accessToken = await signAccessToken(userEmail);
             console.log(accessToken);
@@ -166,11 +137,32 @@ app.get('/auth/users/list', async(req, res) => {
             console.log(refreshToken);
 
 
-            if (accessToken) {
-                return res.status(200).send({
-                    data: ({ accessToken, refreshToken })
-                })
-            }
+            // if (accessToken && refreshToken) {
+            //     return res.status(200).send({
+            //         data: ({ accessToken, refreshToken })
+            //     })
+            // }
+
+
+            var authorities = [];
+            user.getRoles().then(roles => {
+                for (let i = 0; i < roles.length; i++) {
+                    authorities.push("ROLE_" + roles[i].name.toUpperCase());
+                }
+                res.status(200).send({
+                    // id: user.id,
+                    // username: user.username,
+                    email: user.email,
+                    roles: authorities,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+
+                });
+            });
+
+
+
+
 
             // res.send({ accessToken, refreshToken })
 
@@ -184,6 +176,5 @@ app.get('/auth/users/list', async(req, res) => {
     })
 
 
-// module.exports.handler = serverless(app);
 
 module.exports.handler = serverless(app);

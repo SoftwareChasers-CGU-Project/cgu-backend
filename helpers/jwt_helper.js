@@ -9,7 +9,7 @@ module.exports = {
             const secret = process.env.ACCESS_TOKEN_SECRET
             const options = {
                 expiresIn: '1h',
-                // issuer: 'pickurpage.com',
+                issuer: 'pickurpage.com',
                 audience: userEmail,
             }
             JWT.sign(payload, secret, options, (err, token) => {
@@ -37,17 +37,20 @@ module.exports = {
             next()
         })
     },
-    signRefreshToken: (userId) => {
+
+
+
+    signRefreshToken: (email) => {
         return new Promise((resolve, reject) => {
             const payload = {}
             const secret = process.env.REFRESH_TOKEN_SECRET
             console.log(secret)
             const options = {
-                expiresIn: '1y',
-                issuer: 'pickurpage.com',
-                audience: userId,
-            }
-            console.log(`options` + options)
+                    expiresIn: '1y',
+                    issuer: 'pickurpage.com',
+                    audience: email,
+                }
+                // console.log(`options` + options)
             JWT.sign(payload, secret, options, (err, token) => {
                 if (err) {
                     console.log(payload)
@@ -57,41 +60,44 @@ module.exports = {
                     console.log(err.message)
 
                     // reject(err)
-                    reject(createError.InternalServerError())
+                    Promise.reject(createError.InternalServerError())
+                    console.log('reject')
+                    return
                 }
 
-                client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
-                    if (err) {
-                        console.log(userId)
-                        console.log(token)
-                        console.log(err.message)
-                        reject(createError.InternalServerError())
-                        return
-                    }
-                    resolve(token)
-                })
+                // client.SET(email, token, 'EX', 365 * 24 * 60 * 60, (err, reply) => {
+                //     if (err) {
+                //         console.log(email)
+                //         console.log(token)
+                //         console.log(err.message)
+                //         reject(createError.InternalServerError())
+                //         return
+                //     }
+                //     console.log('no err')
+                resolve(token)
+                    // })
             })
         })
     },
-    // verifyRefreshToken: (refreshToken) => {
-    //     return new Promise((resolve, reject) => {
-    //         JWT.verify(
-    //             refreshToken,
-    //             process.env.REFRESH_TOKEN_SECRET,
-    //             (err, payload) => {
-    //                 if (err) return reject(createError.Unauthorized())
-    //                 const userId = payload.aud
-    //                 client.GET(userId, (err, result) => {
-    //                     if (err) {
-    //                         console.log(err.message)
-    //                         reject(createError.InternalServerError())
-    //                         return
-    //                     }
-    //                     if (refreshToken === result) return resolve(userId)
-    //                     reject(createError.Unauthorized())
-    //                 })
-    //             }
-    //         )
-    //     })
-    // },
+    verifyRefreshToken: (refreshToken) => {
+        return new Promise((resolve, reject) => {
+            JWT.verify(
+                refreshToken,
+                process.env.REFRESH_TOKEN_SECRET,
+                (err, payload) => {
+                    if (err) return reject(createError.Unauthorized())
+                    const email = payload.aud
+                    client.GET(email, (err, result) => {
+                        if (err) {
+                            console.log(err.message)
+                            reject(createError.InternalServerError())
+                            return
+                        }
+                        if (refreshToken === result) return resolve(email)
+                        reject(createError.Unauthorized())
+                    })
+                }
+            )
+        })
+    },
 }

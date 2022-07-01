@@ -6,7 +6,7 @@ const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
 
-// const users = require('../Model/user-login')
+const undergraduate = require('../Model/user-login')
 
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -27,23 +27,39 @@ app.use(function(req, res, next) {
     next();
 });
 
-
 let refreshToken = []
 
-
+// app.get('/auth/posts', authenticateToken, (req, res) => {
+//     res.json(users.filter(user => user.email === req.user.email))
+// })
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split('')[1]
     if (token == null) return res.sendStatus(401)
 
-    jwt.verify(token.process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token.process.env.ACCESS_TOKEN_SECRET, (err, undergraduate) => {
         if (err) return res.sendStatus(401)
-        req.user = user;
+        req.undergraduate = undergraduate;
         next()
     })
 
 }
+
+
+app.post('/auth/token', (req, res) => {
+    const refreshToken = req.body.token;
+    if (refreshToken == null)
+        return res.sendStatus(401)
+    if (refreshToken.includes(refreshToken))
+        return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403)
+        const accessToken = generateAccessToken({ em: user.name })
+        res.json({ accessToken: accessToken })
+    })
+})
+
 
 
 function generateAccessToken(user) {
@@ -51,18 +67,36 @@ function generateAccessToken(user) {
 }
 
 
-app.delete('/admin/auth/logout', (req, res) => {
-    refreshToken = refreshToken.filter(token => token !== req.body.token)
-    res.sendStatus(200)
-})
+
+// app.delete('/auth/logout', (req, res) => {
+//     refreshToken = refreshToken.filter(token => token !== req.body.token)
+//     res.sendStatus(200)
+// }),
 
 
-
-
-
-app.get('/auth/users/list', async(req, res) => {
+app.delete('/auth/logout', async(req, res, next) => {
         try {
-            const result = await userLoginService.viewUsers();
+            const { refreshToken } = req.body
+            if (!refreshToken) throw createError.BadRequest()
+            const email = await verifyRefreshToken(refreshToken)
+            console.log('email')
+            client.DEL(email, (err, val) => {
+                if (err) {
+                    console.log(err.message)
+                    throw createError.InternalServerError()
+                }
+                console.log(val)
+                res.sendStatus(204)
+            })
+        } catch (error) {
+            next(error)
+        }
+    }),
+
+
+    app.get('/auth/users/list', async(req, res) => {
+        try {
+            const result = await adminLoginService.viewUsers();
             console.log(result);
             if (result) {
                 return res.status(200).send({
@@ -75,43 +109,51 @@ app.get('/auth/users/list', async(req, res) => {
     }),
 
 
-    app.post('/admin/auth/login', async(req, res) => {
+
+
+    app.post('/auth/login', async(req, res) => {
         try {
             const userEmail = req.body.email;
             const userPassword = req.body.undergradPassword.toString();
-            const result = await userLoginService.viewUser(userEmail);
+            const result = await adminLoginService.viewUser(userEmail);
             if (result.length === 0) {
                 return res.status(200).send({
                     data: 'user has not registered'
                 })
             }
-            console.log(`before is match`)
-            const isMatch = await userLoginService.isValidPassword(userEmail, userPassword);
+
+            // const isMatch = await adminLoginService.isValidPassword(userEmail, userPassword);
+
+            // if (!isMatch) {
+            //     return res.status(200).send({
+            //         data: 'email password mismatch'
+            //     })
+            // }
+
+            const accessToken = await signAccessToken(userEmail);
+            console.log(accessToken);
+            console.log('hi')
+            const refreshToken = await signRefreshToken(userEmail);
+            console.log(refreshToken);
 
 
-
-            console.log(isMatch);
-            console.log(`after is match`)
-            console.log(`before if`)
-            if (!isMatch) {
+            if (accessToken && refreshToken) {
                 return res.status(200).send({
-                    data: 'email password mismatch'
+                    data: ({ accessToken, refreshToken })
                 })
             }
 
-            const accessToken = await signAccessToken(email);
-            console.log(accessToken);
-            console.log('hi')
-            const refreshToken = await signRefreshToken(email);
-            console.log(refreshToken);
+            // res.send({ accessToken, refreshToken })
 
-            res.send({ accessToken, refreshToken })
+
+
         } catch (error) {
             if (error.isJoi === true)
                 return next(createError.BadRequest('Invalid Username/Password'))
                     // next(error)
         }
     })
+
 
 
 module.exports.handler = serverless(app);
