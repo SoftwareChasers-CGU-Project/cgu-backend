@@ -82,6 +82,7 @@ app.post("/admins", async (req, res) => {
     const data = req.body;
     const { adminFName, adminLName, email, Password, phone_number } = data;
     const adminPassword = await bcrypt.hash(Password, 10);
+    console.log(adminPassword);
     if (!data) {
       return "Please pass all required fields!";
     }

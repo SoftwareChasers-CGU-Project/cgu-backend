@@ -276,8 +276,6 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
-  
-
       - http:
           path: /image-album/{album_Id}
           method: get
