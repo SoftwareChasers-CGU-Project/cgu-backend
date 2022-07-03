@@ -14,7 +14,7 @@ const upload = multer({ dest: "uploads/" });
 var jwt = require("jsonwebtoken");
 
 function verifyToken(req, res, next) {
-  console.log(req.headers.authorization);
+ 
   if (!req.headers.authorization) {
     return res.status(401).send("Unauthorized");
   }
@@ -27,6 +27,7 @@ function verifyToken(req, res, next) {
 
   let payload = jwt.verify(token, "adminccu");
   if (!payload) {
+    
     return req.status(401).send("Unauthorized");
   }
   // req.userId=payload.subject
