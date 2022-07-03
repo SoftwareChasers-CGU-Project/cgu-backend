@@ -132,8 +132,10 @@ app.post('/admin/auth/login', async (req, res) => {
                 data: ({ login: false })
             })
         }
-console.log(isMatch[0].userDetails.email)
-        const accessToken = await signAccessToken(isMatch.userDetails.email, isMatch.userDetails.adminType);
+
+        console.log(isMatch.userDetails[0].email);
+
+        const accessToken = await signAccessToken(isMatch.userDetails[0].email, isMatch.userDetails[0].adminType);
         console.log(accessToken);
 
 

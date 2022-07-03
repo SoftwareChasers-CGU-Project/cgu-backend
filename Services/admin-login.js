@@ -52,6 +52,7 @@ module.exports = {
             console.log(userDetails[0].adminPassword.toString());
             const match = await bcrypt.compare(userPassword, userDetails[0].adminPassword.toString());
             if (match) {
+                
                 return {match, userDetails};
             } else {
                 return false;

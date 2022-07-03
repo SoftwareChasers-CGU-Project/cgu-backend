@@ -5,13 +5,14 @@ const createError = require('http-errors')
 module.exports = {
     signAccessToken: (email,adminType) => {
         return new Promise((resolve, reject) => {
-            const payload = {}
+            const payload = {
+                audience: email,
+                role:adminType}
             const secret = process.env.ACCESS_TOKEN_SECRET
             const options = {
                 expiresIn: '1h',
                 issuer: 'pickurpage.com',
-                audience: email,
-                role:adminType
+                
             }
             JWT.sign(payload, secret, options, (err, token) => {
                 if (err) {
