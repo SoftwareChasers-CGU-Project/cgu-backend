@@ -59,6 +59,17 @@ provider:
 #    - include-me-dir/**
 
 functions:
+  JWTToken:
+    handler: Controller/admins.handler
+    events:
+        - http:
+            path: /generateJWTToken/admin/
+            method: post
+            cors: true
+        - http:
+            path: /generateJWTToken/mainadmin/
+            method: post
+            cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:
@@ -133,7 +144,7 @@ functions:
           cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events: 
+    events:
       - http:
           path: /vacancies/applyVacancies/{id}
           method: get
@@ -159,11 +170,19 @@ functions:
           method: get
           cors: true
       - http:
+          path: /vacancies/acceptedvacancies/
+          method: get
+          cors: true
+      - http:
           path: /vacancies/{vacancyId}
           method: get
           cors: true
       - http:
           path: /vacancies/{vacancyId}
+          method: delete
+          cors: true
+      - http:
+          path: /vacancies/delete/{vacancyId}
           method: delete
           cors: true
       - http:
