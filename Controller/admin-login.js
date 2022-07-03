@@ -126,14 +126,22 @@ app.post('/admin/auth/login', async(req, res) => {
                 data: 'user has not registered'
             })
         }
+        
 
-        // const isMatch = await adminLoginService.isValidPassword(userEmail, userPassword);
+        const isMatch = await adminLoginService.isValidPassword(userEmail, userPassword);
+        if (isMatch) {
+            console.log("hi")
+            return res.status(200).send({
+                data: 'email password match'
+            })
+        }
 
-        // if (!isMatch) {
-        //     return res.status(200).send({
-        //         data: 'email password mismatch'
-        //     })
-        // }
+        if (!isMatch) {
+            console.log("hi5")
+            return res.status(200).send({
+                data: 'email password mismatch'
+            })
+        }
 
         const accessToken = await signAccessToken(userEmail);
         console.log(accessToken);

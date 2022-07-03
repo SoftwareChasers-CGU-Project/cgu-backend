@@ -47,15 +47,15 @@ module.exports = {
             var sql = `SELECT adminPassword FROM administrators WHERE email = '${userEmail}'`;
             console.log(userEmail);
             console.log(sql)
-            let passwordFromDB = mysql.query(sql, userEmail).toString();
-            console.log(passwordFromDB);
-            return await bcrypt.compare(userPassword, passwordFromDB);
+            let passwordFromDB = await mysql.query(sql, userEmail);
+
+            console.log(passwordFromDB[0].adminPassword.toString());
+            return await bcrypt.compare(userPassword,passwordFromDB[0].adminPassword.toString());
         } catch {
             (e => {
                 console.log(e.message);
             });
         }
-
     }
 }
 
