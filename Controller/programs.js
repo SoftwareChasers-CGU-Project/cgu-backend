@@ -16,9 +16,31 @@ const multer  = require('multer');
 const registerEventService = require('../Services/registerEvent');
 const upload = multer({ dest: 'uploads/' });
 
+function verifyToken(req, res, next){
+  console.log(req.headers.authorization)
+  if(!req.headers.authorization){
+    return res.status(401).send('Unauthorized');
+  }
+
+  let token =req.headers.authorization.split(' ')[1]
+  console.log(token)
+  if(token==='null'){
+    return res.status(401).send("Unauthorized");
+  }
+
+  let payload=jwt.verify(token, "secretKey")
+  if(!payload){
+    return req.status(401).send('Unauthorized')
+  }
+  // req.userId=payload.subject
+  next()
+
+}
 
 //  function for getting all programs
-app.get('/programs/past', async (req, res) => {
+app.get('/programs/past',verifyToken, async (req, res) => {
+
+  verifyToken()
   try {
       const allPrograms = await ProgramService.getAllPastProgram();
       const allPast= await allPrograms;
