@@ -60,6 +60,13 @@ provider:
 
 
 functions:
+  JWTToken:
+    handler: Controller/com-sessions.handler
+    events:
+      - http:
+          path: /generateJWTToken
+          method: post
+          cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:

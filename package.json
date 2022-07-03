@@ -11,8 +11,10 @@
   "license": "ISC",
   "devDependencies": {
     "serverless-dotenv": "^1.0.0-beta.2",
+
     "serverless-dotenv-plugin": "^3.12.2",
     "serverless-offline": "^8.8.0"
+
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
