@@ -77,7 +77,7 @@ app.post("/generateJWTToken/mainadmin/", async (req, res) => {
 });
 
 //Register a new admin
-app.post("/admins",verifyMainAdminToken, async (req, res) => {
+app.post("/admins", async (req, res) => {
   try {
     const data = req.body;
     const { adminFName, adminLName, email, Password, phone_number } = data;
