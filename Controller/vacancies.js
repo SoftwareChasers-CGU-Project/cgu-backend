@@ -33,7 +33,7 @@ function verifyToken(req, res, next) {
 
 
 //get all linkdin profile links
-app.get("/vacancies/apply", verifyToken, async (req, res) => {
+app.get("/vacancies/apply", async (req, res) => {
   try {
     const allLinks = await VacancyService.getAllLinks();
 
@@ -49,7 +49,7 @@ app.get("/vacancies/apply", verifyToken, async (req, res) => {
 }),
 
   //get all vacancies
-  app.get("/vacancies/", verifyToken, async (req, res) => {
+  app.get("/vacancies/", async (req, res) => {
     try {
       const allVacancies = await VacancyService.getAllVacancies();
       if (allVacancies) {
@@ -64,7 +64,7 @@ app.get("/vacancies/apply", verifyToken, async (req, res) => {
   }),
 
   //get all pending vacancies
-  app.get("/vacancies/pendingVacancy/", verifyToken, async (req, res) => {
+  app.get("/vacancies/pendingVacancy/", async (req, res) => {
     try {
       const allVacancies = await VacancyService.getPendingVacancies();
 
@@ -80,7 +80,7 @@ app.get("/vacancies/apply", verifyToken, async (req, res) => {
   }),
 
   //get all accepted vacancies
-  app.get("/vacancies/acceptedvacancy/",verifyToken, async (req, res) => {
+  app.get("/vacancies/acceptedvacancy/", async (req, res) => {
     try {
       const allVacancies = await VacancyService.getAcceptedVacancies();
 
@@ -155,7 +155,7 @@ app.get("/vacancies/apply", verifyToken, async (req, res) => {
   }),
 
   //Accept a vacancy
-  app.put("/vacancies/:vacancyId/",verifyToken, async (req, res) => {
+  app.put("/vacancies/:vacancyId/", async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
       const acceptvacancy = await VacancyService.acceptVacancy(vacancyId);
@@ -212,7 +212,7 @@ app.get("/vacancies/apply", verifyToken, async (req, res) => {
   }),
 
   //delete a vacancy
-  app.delete("/vacancies/:vacancyId/", verifyToken, async (req, res) => {
+  app.delete("/vacancies/:vacancyId/", async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
 
@@ -254,7 +254,7 @@ app.get("/vacancies/apply", verifyToken, async (req, res) => {
   }),
   
   //delete an accepted vacancy
-  app.delete("/vacancies/delete/:vacancyId/",verifyToken, async (req, res) => {
+  app.delete("/vacancies/delete/:vacancyId/", async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
       console.log(vacancyId);

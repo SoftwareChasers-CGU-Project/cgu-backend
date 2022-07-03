@@ -60,17 +60,6 @@ provider:
 
 
 functions:
-  JWTToken:
-    handler: Controller/admins.handler
-    events:
-        - http:
-            path: /generateJWTToken/admin/
-            method: post
-            cors: true
-        - http:
-            path: /generateJWTToken/mainadmin/
-            method: post
-            cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:
@@ -92,8 +81,7 @@ functions:
         - http:
             path: /admins
             method: get
-            cors: true
-            
+            cors: true         
   programAPI:
     handler: Controller/programs.handler
     events:
