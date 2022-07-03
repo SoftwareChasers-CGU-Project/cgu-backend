@@ -273,6 +273,40 @@ functions:
           path: /image-album/{album_Id}
           method: put
           cors: true
+      - http:
+          path: /image-album/upload
+          method: post
+          cors: true
+      - http:
+          path: /image-album/upload
+          method: get
+          cors: true
+  satisfactionAPI:
+    handler: Controller/satisfaction.handler
+    events:
+      - http:
+          path: /satisfaction
+          method: post
+          cors: true
+  authenticationAPI:
+    handler: Controller/admin-login.handler
+    events:
+      - http:
+          path: /auth/login
+          method: post
+          cors: true
+      - http:
+          path: /admin/auth/login
+          method: post
+          cors: true
+      - http:
+          path: /auth/logout
+          method: delete
+          cors: true
+      - http:
+          path: /admin/auth/logout
+          method: delete
+          cors: true
 
 
   sendEmail:
