@@ -3,8 +3,7 @@ const mysql = require('../dbconfig');
 
 module.exports = {
     async createAlbum(product) {
-        // let result = await mysql.query(`SELECT * from products`);
-        // console.log(`inserting` + product)
+
         let sql = "INSERT INTO Album SET ?";
 
         let result = mysql.query(sql, product, (err) => {
@@ -18,7 +17,6 @@ module.exports = {
         });
 
         if (result) {
-            console.log(result)
             return {
                 data: product,
 
@@ -31,7 +29,7 @@ module.exports = {
 
 
     async getListOfAlbums() {
-        // let sql ="SELECT * from products";
+
 
         let result = await mysql.query({
             sql: 'SELECT * FROM Album',
@@ -39,20 +37,18 @@ module.exports = {
             values: ['serverless']
         })
         if (result) {
-            // console.log("getAllProducts called")
             return result;
         }
 
         return "Error fetching albums from db"
     },
-    // if(product)  return product;
-    // return "Error fetching products from db"
-    // }
+
     async viewAlbum(Id) {
         let sql = `SELECT * FROM Album WHERE album_Id=?`;
+        console.log(sql)
         let result = mysql.query(sql, Id);
+        console.log(sql)
         if (result) {
-            // console.log("getAllProducts called")
             return result;
         }
 
@@ -60,17 +56,12 @@ module.exports = {
     },
 
 
-    // ----------------------------------------------------------------------------
+
 
     async deleteAlbum(Id) {
         let sql = "DELETE FROM Album WHERE ?";
         let result = await mysql.query(sql, Id);
-        console.log(result);
-        // let result =  mysql.query(sql, (err) => {
-        //   if (err) {
-        //     throw err;
-        //   }
-        // });
+
         if (result) {
             return result;
         }
@@ -78,10 +69,9 @@ module.exports = {
     },
 
     async updateAlbum(Album) {
-        console.log(Album.createdDate)
-        var sql = `UPDATE Album SET name = '${Album.albumName}', createdDate = '${Album.createdDate}', description = '${Album.albumDesc}' WHERE album_Id= '${Album.albumId}' `;
-        // console.log(Album.albumId)
-        console.log(sql)
+        var sql = `UPDATE Album SET name = '${Album.albumName}', createdDate = '${Album.createdDate}', description = '${Album.albumDesc}' , albumLink = '${Album.albumLink}'WHERE album_Id= '${Album.albumId}' `;
+
+
         let result = mysql.query(sql, (err) => {
             if (err) {
                 throw err;
