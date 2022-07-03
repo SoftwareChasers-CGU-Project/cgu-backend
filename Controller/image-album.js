@@ -2,23 +2,24 @@ const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const multer = require('multer')
+const multer = require('multer');
+const upload = multer({ dest: 'uploads' })
+const fs = require('fs');
+const util = require('util');
+const unlinkFile = util.promisify(fs.unlink);
+
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
 const AlbumService = require('../Services/image-album');
 
 
+
+const { uploadFile, getFileStream } = require('../Services/aws-s3')
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, '/uploads');
-    },
-    filename: function(req, file, callback) {
-        callback(null, file.fieldname);
-    }
-});
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -26,15 +27,16 @@ app.use(function(req, res, next) {
     next();
 });
 
+// const headerOptions = { headers: { Accept: 'application/json' } }
+
 app.get('/image-album/', async(req, res) => {
         try {
-            // await dbConnection();
+
             const allAlbums = await AlbumService.getListOfAlbums();
             const albumData = await allAlbums;
-            //console.log(hi)
+
 
             if (albumData) {
-                console.log(`get called`)
                 return res.status(200).send({
                     data: albumData
                 })
@@ -61,41 +63,32 @@ app.get('/image-album/', async(req, res) => {
         }
     })
 
-// -------------------------------------------------------------------
 
 app.delete('/image-album/:album_Id', async(req, res) => {
         try {
-            console.log(`delete called`)
             const Id = req.params;
-            // console.log('Id ');
-            console.log(Id);
-            // console.log(`hi`)
             const deleteData = await AlbumService.deleteAlbum(Id);
             if (deleteData) {
-                console.log(`delete called`)
-                console.log('Image album deleted');
                 return res.status(200).send({})
             }
         } catch (error) {
-            //  handle errors here
             console.log(error, "error!!");
         }
     }),
 
 
-    // data = require("../Model/image-album")
+
     app.post('/image-album/', async(req, res) => {
         try {
-            //  await dbConnection();
+
             const data = req.body;
-            // const { name } = data;
-            const { name, description, createdDate } = data;
-            console.log(description)
-                // const { productId } = data;
+
+            const { name, description, createdDate, albumLink } = data;
+
             if (!data) {
                 return "Please pass all required fields!"
             }
-            const dataToSave = { album_id: uuidv4(), name, description, createdDate };
+            const dataToSave = { album_id: uuidv4(), name, description, createdDate, albumLink };
             let createAlbum = await AlbumService.createAlbum(dataToSave);
             if (createAlbum) {
                 return res.status(200).send(
@@ -104,7 +97,6 @@ app.delete('/image-album/:album_Id', async(req, res) => {
 
             }
         } catch (error) {
-            //  handle errors here
             console.log(error, "error!!");
         }
 
@@ -113,17 +105,15 @@ app.delete('/image-album/:album_Id', async(req, res) => {
 
 app.put('/image-album/:albumId', async(req, res) => {
     try {
-        console.log(req.body);
         const albumId = req.params.albumId;
         const albumName = req.body.name;
         const albumDesc = req.body.description;
         const createdDate = req.body.createdDate;
-        console.log(albumId);
-        // console.log(album_id);
+        const albumLink = req.body.albumLink;
         if (!req.body) {
             return "Please pass all required fields!"
         }
-        const dataToSave = { albumName, albumDesc, albumId, createdDate };
+        const dataToSave = { albumName, albumDesc, albumId, createdDate, albumLink };
         let updateAlbum = await AlbumService.updateAlbum(dataToSave);
         if (updateAlbum) {
             return res.status(200).send(updateAlbum)
@@ -135,7 +125,21 @@ app.put('/image-album/:albumId', async(req, res) => {
 })
 
 
+app.post('/image-album/upload', upload.single('file'), async(req, res) => {
+    const file = req.file;
+    const result = await uploadFile(file);
+    this.res.error.retryable = true;
+    await unlinkFile(file.path);
+    const info = req.body;
+    res.send({ imagePath: `/image-album/upload/${result.Key}` })
+})
 
+app.get('/image-album/upload/:key', (req, res) => {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
+
+    readStream.pipe(res)
+})
 
 
 module.exports.handler = serverless(app);
