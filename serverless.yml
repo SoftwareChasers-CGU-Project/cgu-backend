@@ -289,27 +289,11 @@ functions:
     handler: Controller/user-login.handler
     events:
       - http:
-          path: /auth/users/list
-          method: get
-          cors: true
-      - http:
-          path: /auth/posts
-          method: post
-          cors: true
-      - http:
           path: /auth/login
           method: post
           cors: true
       - http:
           path: /admin/auth/login
-          method: post
-          cors: true
-      - http:
-          path: /auth/users/{email}
-          method: get
-          cors: true
-      - http:
-          path: /auth/token
           method: post
           cors: true
       - http:

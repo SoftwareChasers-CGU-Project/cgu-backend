@@ -43,8 +43,6 @@ module.exports = {
 
 
     async isValidPassword(userEmail, userPassword) {
-
-
         try {
             var sql = `SELECT adminPassword FROM administrators WHERE email = '${userEmail}'`;
             console.log(userEmail);

@@ -36,8 +36,8 @@ module.exports = {
             let passwordFromDB = await mysql.query(sql, userEmail);
             console.log(passwordFromDB);
             const password = passwordFromDB[0].undergradPassword;
-            console.log(password)
-            return await bcrypt.compare(password, userPassword);
+            console.log(password);
+            return await bcrypt.compare(userPassword, password);
         } catch {
             (e => {
                 console.log(e.message);
