@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -111,11 +111,8 @@ app.use(function(req, res, next) {
 
 
 
-app.post('/admin/auth/login', async(req, res) => {
+app.post('/admin/auth/login', async (req, res) => {
     try {
-        console.log('hi1')
-        console.log(req.body);
-        console.log('hi2')
         const userEmail = req.body.email;
         const userPassword = req.body.adminPassword.toString();
         console.log(userEmail)
@@ -123,27 +120,20 @@ app.post('/admin/auth/login', async(req, res) => {
         const result = await adminLoginService.viewUser(userEmail);
         if (result.length === 0) {
             return res.status(200).send({
-                data: 'user has not registered'
+                data: ({ login: false })
             })
         }
-        
 
         const isMatch = await adminLoginService.isValidPassword(userEmail, userPassword);
-        if (isMatch) {
-            console.log("hi")
+        console.log(isMatch);
+
+        if (isMatch.match == false) {
             return res.status(200).send({
-                data: 'email password match'
+                data: ({ login: false })
             })
         }
-
-        if (!isMatch) {
-            console.log("hi5")
-            return res.status(200).send({
-                data: 'email password mismatch'
-            })
-        }
-
-        const accessToken = await signAccessToken(userEmail);
+console.log(isMatch[0].userDetails.email)
+        const accessToken = await signAccessToken(isMatch.userDetails.email, isMatch.userDetails.adminType);
         console.log(accessToken);
 
 
@@ -160,7 +150,10 @@ app.post('/admin/auth/login', async(req, res) => {
 
         if (accessToken) {
             return res.status(200).send({
-                data: ({ accessToken })
+                data: ({
+                    accessToken,
+                    login: true
+                })
             })
         }
 
@@ -168,7 +161,7 @@ app.post('/admin/auth/login', async(req, res) => {
         console.log(error)
         if (error.isJoi === true)
             return next(createError.BadRequest('Invalid Username/Password'))
-                // next(error)
+        // next(error)
     }
 })
 
