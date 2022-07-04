@@ -60,12 +60,13 @@ provider:
 
 
 functions:
-
-#   runCronJob : 
-#     handler: handler.run
-#     events : 
-#      - schedule : cron(0 00 * * *)
-
+  JWTToken:
+    handler: Controller/com-sessions.handler
+    events:
+      - http:
+          path: /generateJWTToken
+          method: post
+          cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:
@@ -87,8 +88,7 @@ functions:
         - http:
             path: /admins
             method: get
-            cors: true
-            
+            cors: true         
   programAPI:
     handler: Controller/programs.handler
     events:
@@ -180,7 +180,11 @@ functions:
             cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events:         
+    events:
+      - http:
+          path: /vacancies/applyVacancies/{id}
+          method: get
+          cors: true        
       - http:
           path: /vacancies/
           method: post
@@ -202,11 +206,19 @@ functions:
           method: get
           cors: true
       - http:
+          path: /vacancies/acceptedvacancies/
+          method: get
+          cors: true
+      - http:
           path: /vacancies/{vacancyId}
           method: get
           cors: true
       - http:
           path: /vacancies/{vacancyId}
+          method: delete
+          cors: true
+      - http:
+          path: /vacancies/delete/{vacancyId}
           method: delete
           cors: true
       - http:
@@ -267,6 +279,14 @@ functions:
           path: /image-album/{album_Id}
           method: put
           cors: true
+      - http:
+          path: /image-album/upload
+          method: post
+          cors: true
+      - http:
+          path: /image-album/upload
+          method: get
+          cors: true
   consultationAPI:
     handler: Controller/consultation.handler
     events:
@@ -296,6 +316,32 @@ functions:
           cors: true
       - http:
           path: /scheduled-session/delete/{consultation_id}
+          method: delete
+          cors: true
+  satisfactionAPI:
+    handler: Controller/satisfaction.handler
+    events:
+      - http:
+          path: /satisfaction
+          method: post
+          cors: true
+  authenticationAPI:
+    handler: Controller/admin-login.handler
+    events:
+      - http:
+          path: /auth/login
+          method: post
+          cors: true
+      - http:
+          path: /admin/auth/login
+          method: post
+          cors: true
+      - http:
+          path: /auth/logout
+          method: delete
+          cors: true
+      - http:
+          path: /admin/auth/logout
           method: delete
           cors: true
   sendEmail:
