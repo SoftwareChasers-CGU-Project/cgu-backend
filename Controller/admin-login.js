@@ -6,7 +6,7 @@ const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
 
-const undergraduate = require('../Model/user-login')
+
 
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -152,10 +152,9 @@ app.post('/admin/auth/login', async (req, res) => {
 
         if (accessToken) {
             return res.status(200).send({
-                data: ({
-                    accessToken,
-                    login: true
-                })
+
+                accessToken
+
             })
         }
 
