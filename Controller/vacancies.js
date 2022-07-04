@@ -7,33 +7,33 @@ const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
 uuidv4();
 const VacancyService = require("../Services/vacancies");
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 function verifyToken(req, res, next) {
-  console.log(req.headers.authorization);
+
   if (!req.headers.authorization) {
     return res.status(401).send("Unauthorized");
   }
-
-  let token = req.headers.authorization.split(" ")[1];
-  console.log(token);
-  if (token === "null") {
+ 
+  let token = req.headers.authorization.split(' ')[1]
+  console.log(token)
+  if(token == 'null'){
     return res.status(401).send("Unauthorized");
   }
 
-  let payload = jwt.verify(token, "adminccu");
-  if (!payload) {
-    return req.status(401).send("Unauthorized");
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+ 
+  if(payload.role == 'Admin' || payload.role == 'MainAdmin'){
+    next();
+  }else{
+    return res.status(401).send("Unauthorized");
   }
-  // req.userId=payload.subject
-  next();
 }
 
 
 //get all linkdin profile links
-app.get("/vacancies/apply", async (req, res) => {
+app.get("/vacancies/apply",verifyToken, async (req, res) => {
   try {
     const allLinks = await VacancyService.getAllLinks();
 
@@ -49,7 +49,7 @@ app.get("/vacancies/apply", async (req, res) => {
 }),
 
   //get all vacancies
-  app.get("/vacancies/", async (req, res) => {
+  app.get("/vacancies/", verifyToken, async (req, res) => {
     try {
       const allVacancies = await VacancyService.getAllVacancies();
       if (allVacancies) {
@@ -64,7 +64,7 @@ app.get("/vacancies/apply", async (req, res) => {
   }),
 
   //get all pending vacancies
-  app.get("/vacancies/pendingVacancy/", async (req, res) => {
+  app.get("/vacancies/pendingVacancy/", verifyToken, async (req, res) => {
     try {
       const allVacancies = await VacancyService.getPendingVacancies();
 
@@ -80,7 +80,7 @@ app.get("/vacancies/apply", async (req, res) => {
   }),
 
   //get all accepted vacancies
-  app.get("/vacancies/acceptedvacancy/", async (req, res) => {
+  app.get("/vacancies/acceptedvacancy/",verifyToken, async (req, res) => {
     try {
       const allVacancies = await VacancyService.getAcceptedVacancies();
 
@@ -155,7 +155,7 @@ app.get("/vacancies/apply", async (req, res) => {
   }),
 
   //Accept a vacancy
-  app.put("/vacancies/:vacancyId/", async (req, res) => {
+  app.put("/vacancies/:vacancyId/", verifyToken, async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
       const acceptvacancy = await VacancyService.acceptVacancy(vacancyId);
@@ -195,7 +195,24 @@ app.get("/vacancies/apply", async (req, res) => {
   }),
 
   //get a vacancy by Id
-  app.get("/vacancies/:vacancyId/", async (req, res) => {
+  app.get("/vacancies/:vacancyId/", verifyToken, async (req, res) => {
+    try {
+      const vacancyId = req.params.vacancyId;
+      const getvacancy = await VacancyService.getVacancyById(vacancyId);
+
+      if (getvacancy) {
+        return res.status(200).send({
+          data: getvacancy,
+        });
+      }
+    } catch (error) {
+      //  handle errors here
+      console.log(error, "error!!");
+    }
+  }),
+
+  //get a vacancy by Id in main website
+  app.get("/vacancies/acceptedvacancies/:vacancyId/", async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
       const getvacancy = await VacancyService.getVacancyById(vacancyId);
@@ -212,12 +229,11 @@ app.get("/vacancies/apply", async (req, res) => {
   }),
 
   //delete a vacancy
-  app.delete("/vacancies/:vacancyId/", async (req, res) => {
+  app.delete("/vacancies/:vacancyId/",verifyToken, async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
 
       let email = await VacancyService.getEmail(vacancyId);
-      console.log(email.companyEmail);
 
       var transporter = nodemailer.createTransport({
         host: "smtp.mailtrap.io",
@@ -254,7 +270,7 @@ app.get("/vacancies/apply", async (req, res) => {
   }),
   
   //delete an accepted vacancy
-  app.delete("/vacancies/delete/:vacancyId/", async (req, res) => {
+  app.delete("/vacancies/delete/:vacancyId/", verifyToken,  async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
       console.log(vacancyId);

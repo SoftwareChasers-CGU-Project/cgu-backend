@@ -6,7 +6,7 @@ module.exports = {
     let check_sql = await mysql.query(
       `select * from users where email='${user.email}'`
     );
-    console.log(check_sql[0]);
+  
     if (check_sql[0] != null) {
       return;
     }

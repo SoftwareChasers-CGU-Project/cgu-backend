@@ -10,74 +10,50 @@ const multer = require("multer");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// function verifyToken(req, res, next) {
-//   console.log(req.headers.authorization);
-//   if (!req.headers.authorization) {
-//     return res.status(401).send("Unauthorized");
-//   }
+function verifyToken(req, res, next) {
 
-//   let token = req.headers.authorization.split(" ")[1];
-//   console.log(token);
-//   if (token === "null") {
-//     return res.status(401).send("Unauthorized");
-//   }
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
+  console.log(req.headers.authorization);
 
-//   let payload = jwt.verify(token, "adminccu");
-//   if (!payload) {
-//     return req.status(401).send("Unauthorized");
-//   }
-//   // req.userId=payload.subject
-//   next();
-// } 
+  let token = req.headers.authorization.split(' ')[1]
+ 
+  if(token == 'null'){
+    return res.status(401).send("Unauthorized");
+  }
 
-// function verifyMainAdminToken(req, res, next) {
-//   console.log(req.headers.authorization);
-//   if (!req.headers.authorization) {
-//     return res.status(401).send("Unauthorized");
-//   }
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  
+  if(payload.role == 'Admin' || payload.role == 'MainAdmin'){
+    next();
+  }else{
+    return res.status(401).send("Unauthorized");
+  }
+}
 
-//   let token = req.headers.authorization.split(" ")[1];
-//   console.log(token);
-//   if (token === "null") {
-//     return res.status(401).send("Unauthorized");
-//   }
+function verifyMainAdminToken(req, res, next) {
 
-//   let payload = jwt.verify(token, "mainadminccu");
-//   if (!payload) {
-//     return req.status(401).send("Unauthorized");
-//   }
-//   // req.userId=payload.subject
-//   next();
-// }
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
+  
+  let token = req.headers.authorization.split(' ')[1]
 
-// app.post("/generateJWTToken/admin", async (req, res) => {
-//   var token = jwt.sign(
-//     {
-//       role: "Admin",
-//       user: "prabashi",
-//     },
-//     "adminccu"
-//   );
-//   return res.status(200).send({
-//     token: token,
-//   });
-// });
+  if(token == 'null'){
+    return res.status(401).send("Unauthorized");
+  }
 
-// app.post("/generateJWTToken/mainadmin/", async (req, res) => {
-//   var token = jwt.sign(
-//     {
-//       role: "Main Admin",
-//       user: "Kumari",
-//     },
-//     "mainadminccu"
-//   );
-//   return res.status(200).send({
-//     token: token,
-//   });
-// });
-
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+ 
+  if(payload.role == 'MainAdmin'){
+    next();
+  }else{
+    return res.status(401).send("Unauthorized");
+  }
+}
 //Register a new admin
-app.post("/admins", async (req, res) => {
+app.post("/admins", verifyMainAdminToken, async (req, res) => {
   try {
     const data = req.body;
     const { adminFName, adminLName, email, Password, phone_number } = data;
@@ -104,7 +80,7 @@ app.post("/admins", async (req, res) => {
 }),
 
   //get all administrators
-  app.get("/admins/", async (req, res) => {
+  app.get("/admins/", verifyToken, async (req, res) => {
     try {
       const AllAdmins = await AdminService.getAllAdmins();
       if (AllAdmins) {

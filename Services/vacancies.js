@@ -64,7 +64,7 @@ module.exports = {
     let result = await mysql.query({
       sql: "DELETE FROM applyVacancies where vacancyId = " + mysql.escape(vacancyId),
     });
-
+    
     if (result) {
       return result;
     }
@@ -106,6 +106,15 @@ module.exports = {
       return;
     }
 
+    
+    // let check_sql2 = await mysql.query(
+    //   `select * from applyVacancies where undergrad_email='${link.undergrad_email}', AND vacancyId='${link.vacancyId}'`
+    // );
+    // console.log(check_sql2[0]);
+    // if (check_sql2[0] == null) {
+    //   return;
+    // }
+
     let sql = "INSERT INTO applyVacancies SET ?";
     let result = mysql.query(sql, link, (err) => {
       if (err) {
@@ -125,7 +134,7 @@ module.exports = {
   //get all Linkedin profile links
   async getAllLinks() {
     let result = await mysql.query({
-      sql: 'SELECT CONCAT(u.undergradFName," ",undergradLName) as fullname, v.vacancyTitle, v.companyName, a.linkedin FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and u.email = a.undergrad_email;',
+      sql: 'SELECT CONCAT(u.undergradFName," ",undergradLName) as fullname, v.vacancyTitle, v.companyName, a.linkedin FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and u.email = a.undergrad_email order by applied_time DESC;',
     });
 
     if (result) {

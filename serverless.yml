@@ -214,6 +214,10 @@ functions:
           method: get
           cors: true
       - http:
+          path: /vacancies/acceptedvacancies/{vacancyId}
+          method: get
+          cors: true
+      - http:
           path: /vacancies/{vacancyId}
           method: delete
           cors: true
