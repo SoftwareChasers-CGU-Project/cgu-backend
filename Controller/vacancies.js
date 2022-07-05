@@ -11,13 +11,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 function verifyToken(req, res, next) {
-
   if (!req.headers.authorization) {
     return res.status(401).send("Unauthorized");
   }
  
   let token = req.headers.authorization.split(' ')[1]
-  console.log(token)
+ 
   if(token == 'null'){
     return res.status(401).send("Unauthorized");
   }
@@ -160,7 +159,6 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
       const vacancyId = req.params.vacancyId;
       const acceptvacancy = await VacancyService.acceptVacancy(vacancyId);
       let email = await VacancyService.getEmail(vacancyId);
-      console.log(email[0].companyEmail);
 
       var transporter = nodemailer.createTransport({
         host: "smtp.mailtrap.io",

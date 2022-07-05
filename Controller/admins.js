@@ -52,6 +52,7 @@ function verifyMainAdminToken(req, res, next) {
     return res.status(401).send("Unauthorized");
   }
 }
+
 //Register a new admin
 app.post("/admins", verifyMainAdminToken, async (req, res) => {
   try {
