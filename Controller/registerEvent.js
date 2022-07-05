@@ -46,9 +46,6 @@ app.post('/registerEvent', async (req, res) => {
     
 })
 
-    
-    
-
 module.exports.handler = serverless(app);
 
 
