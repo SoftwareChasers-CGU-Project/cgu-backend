@@ -119,8 +119,8 @@ app.post('/admin/auth/login', async (req, res) => {
         console.log(userPassword)
         const result = await adminLoginService.viewUser(userEmail);
         if (result.length === 0) {
-            return res.status(200).send({
-                data: ({ login: false })
+            return res.status(403).send({
+                data: 'user has not registered'
             })
         }
 
@@ -128,12 +128,10 @@ app.post('/admin/auth/login', async (req, res) => {
         console.log(isMatch);
 
         if (isMatch.match == false) {
-            return res.status(200).send({
-                data: ({ login: false })
+            return res.status(403).send({
+                data: 'email password mismatch'
             })
         }
-
-        console.log(isMatch.userDetails[0].email);
 
         const accessToken = await signAccessToken(isMatch.userDetails[0].email, isMatch.userDetails[0].adminType);
         console.log(accessToken);
@@ -152,10 +150,7 @@ app.post('/admin/auth/login', async (req, res) => {
 
         if (accessToken) {
             return res.status(200).send({
-                data: ({
-                    accessToken,
-                    login: true
-                })
+                accessToken
             })
         }
 
