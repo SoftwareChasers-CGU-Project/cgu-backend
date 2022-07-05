@@ -11,7 +11,7 @@ module.exports = {
     return "Error fetching the program from db"
   },
 
-async addRegisterEvent (register) {
+  async addRegisterEvent (register) {
   let check_sql=await mysql.query(`select * from undergraduates where email='${register.undergradEmail}'`)
  
   
@@ -20,7 +20,6 @@ async addRegisterEvent (register) {
   }  
  
   let sql = `INSERT INTO undergraduateEventRegistration  SET eventId='${register.eventId}', undergradEmail='${register.undergradEmail}' ON DUPLICATE KEY UPDATE eventId='${register.eventId}', undergradEmail='${register.undergradEmail}'`;
-  console.log(sql);
   let result = mysql.query(sql, register, (err) => {
     if (err) {
       throw err;
