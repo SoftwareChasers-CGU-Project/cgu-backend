@@ -30,12 +30,12 @@ module.exports = {
 
     async isValidPassword(userEmail, userPassword) {
         try {
-            var sql = `SELECT undergradPassword FROM undergraduates WHERE email = '${userEmail}'`;
+            var sql = `SELECT * FROM undergraduates WHERE email = '${userEmail}'`;
             console.log(userEmail);
             console.log(sql)
-            let passwordFromDB = await mysql.query(sql, userEmail);
-            console.log(passwordFromDB);
-            const password = passwordFromDB[0].undergradPassword;
+            let userDetails = await mysql.query(sql, userEmail);
+            console.log(userDetails);
+            const password = userDetails[0].undergradPassword;
             console.log(password);
             return await bcrypt.compare(userPassword, password);
         } catch {
