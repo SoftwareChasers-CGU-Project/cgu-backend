@@ -119,8 +119,7 @@ functions:
       - http:
             path: /programs/programType/{programCat}
             method: get
-            cors: true
-        
+            cors: true   
   com-sessionAPI:
     handler: Controller/com-sessions.handler
     events:

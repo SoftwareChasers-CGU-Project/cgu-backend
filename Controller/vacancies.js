@@ -30,6 +30,25 @@ function verifyToken(req, res, next) {
   }
 }
 
+function verifyMainToken(req, res, next) {
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
+ 
+  let token = req.headers.authorization.split(' ')[1]
+ 
+  if(token == 'null'){
+    return res.status(401).send("Unauthorized");
+  }
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+ 
+  if(payload.audience !=req.body.undergrad_email){
+    return res.status(401).send({msg:"Invalid Email Address"});
+  }else{
+    next();
+  }
+}
+
 
 //get all linkdin profile links
 app.get("/vacancies/apply",verifyToken, async (req, res) => {
@@ -184,6 +203,7 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
       if (acceptvacancy) {
         return res.status(200).send({
           data: acceptvacancy,
+          message : "Vacancy Accepted"
         });
       }
     } catch (error) {
@@ -226,7 +246,7 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
     }
   }),
 
-  //delete a vacancy
+  //reject a vacancy
   app.delete("/vacancies/:vacancyId/",verifyToken, async (req, res) => {
     try {
       const vacancyId = req.params.vacancyId;
@@ -259,6 +279,7 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
       if (deletevacancy) {
         return res.status(200).send({
           deletevacancy,
+          message : "Vacancy rejected"
         });
       }
     } catch (error) {
@@ -279,6 +300,7 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
       if (deletevacancy) {
         return res.status(200).send({
           deletevacancy,
+          message : "Vacancy deleted"
         });
       }
     } catch (error) {
@@ -288,7 +310,7 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
   }),
 
   //apply for a vacancy
-  app.post("/vacancies/apply/", async (req, res) => {
+  app.post("/vacancies/apply/",verifyMainToken, async (req, res) => {
     try {
       const data = req.body;
       const { vacancyId, undergrad_email, linkedin } = data;
@@ -298,7 +320,8 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
       const dataToSave = { vacancyId, undergrad_email, linkedin, id: uuidv4() };
       let apply = await VacancyService.applyVacancy(dataToSave);
       if (apply) {
-        return res.status(200).send(apply);
+        return res.status(200).send(
+          apply);
       } else {
         res.status(422).json({ status: false, msg: "False" });
       }
@@ -365,12 +388,12 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
   }),
 
   //Send linkedin profiles to companies
-  app.get("/vacancies/applyVacancies/:id/", async (req, res) => {
+  app.get("/vacancies/applyVacancies/:id/", verifyToken, async (req, res) => {
     try {
       const linkedin = req.params.id;
       console.log(linkedin);
       let details = await VacancyService.getProfileDetails(linkedin);
-      console.log(details[0].linkedin);
+      
 
       var transporter = nodemailer.createTransport({
         host: "smtp.mailtrap.io",

@@ -57,6 +57,7 @@ function verifyMainAdminToken(req, res, next) {
 app.post("/admins", verifyMainAdminToken, async (req, res) => {
   try {
     const data = req.body;
+    console.log(data);
     const { adminFName, adminLName, email, Password, phone_number } = data;
     const adminPassword = await bcrypt.hash(Password, 10);
     console.log(adminPassword);
@@ -70,7 +71,7 @@ app.post("/admins", verifyMainAdminToken, async (req, res) => {
     let createAdmin = await AdminService.createAdmin(dataToSaveAdmin);
 
     if (createAdmin) {
-      res.status(200).json({ status: true, msg: "Success" });
+      res.status(200).json({ status: true, msg: "Admin registered Successfully" });
       createAdmin;
     } else {
       res.status(422).json({ status: false, msg: "False" });
@@ -86,7 +87,7 @@ app.post("/admins", verifyMainAdminToken, async (req, res) => {
       const AllAdmins = await AdminService.getAllAdmins();
       if (AllAdmins) {
         return res.status(200).send({
-          data: AllAdmins,
+          data: AllAdmins
         });
       }
     } catch (error) {

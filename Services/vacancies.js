@@ -101,19 +101,10 @@ module.exports = {
     let check_sql = await mysql.query(
       `select * from users where email='${link.undergrad_email}'`
     );
-    console.log(check_sql[0]);
     if (check_sql[0] == null) {
       return;
     }
 
-    
-    // let check_sql2 = await mysql.query(
-    //   `select * from applyVacancies where undergrad_email='${link.undergrad_email}', AND vacancyId='${link.vacancyId}'`
-    // );
-    // console.log(check_sql2[0]);
-    // if (check_sql2[0] == null) {
-    //   return;
-    // }
 
     let sql = "INSERT INTO applyVacancies SET ?";
     let result = mysql.query(sql, link, (err) => {
@@ -134,7 +125,7 @@ module.exports = {
   //get all Linkedin profile links
   async getAllLinks() {
     let result = await mysql.query({
-      sql: 'SELECT CONCAT(u.undergradFName," ",undergradLName) as fullname, v.vacancyTitle, v.companyName, a.linkedin FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and u.email = a.undergrad_email order by applied_time DESC;',
+      sql: 'SELECT CONCAT(u.undergradFName," ",undergradLName) as fullname, v.vacancyTitle, v.companyName, a.linkedin, a.id, a.sendEmail FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and u.email = a.undergrad_email order by applied_time DESC;',
     });
 
     if (result) {
@@ -222,14 +213,18 @@ module.exports = {
   async getProfileDetails(id) {
     let result = await mysql.query({
       sql:
-        'SELECT CONCAT( u.undergradFName, " ", u.undergradLName ) AS fullname,  v.vacancyTitle, v.companyName, v.companyEmail, a.linkedin FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and a.undergrad_email = u.email and a.id= ' +
+        'UPDATE applyVacancies set sendEmail=1 where id = ' + mysql.escape(id),
+    });
+
+    let result1 = await mysql.query({
+      sql:
+        'SELECT CONCAT( u.undergradFName, " ", u.undergradLName ) AS fullname,  v.vacancyTitle, v.companyName, v.companyEmail, a.linkedin, a.id FROM applyVacancies a, vacancies v, undergraduates u WHERE v.vacancyId = a.vacancyId and a.undergrad_email = u.email and a.id= ' +
         mysql.escape(id),
     });
 
-    console.log(result);
-    JSON.parse(JSON.stringify(result));
-    if (result) {
-      return result;
+    JSON.parse(JSON.stringify(result1));
+    if (result1) {
+      return result1;
     }
   },
 };
