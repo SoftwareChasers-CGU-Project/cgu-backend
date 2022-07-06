@@ -60,12 +60,13 @@ provider:
 
 
 functions:
-
-#   runCronJob : 
-#     handler: handler.run
-#     events : 
-#      - schedule : cron(0 00 * * *)
-
+  JWTToken:
+    handler: Controller/com-sessions.handler
+    events:
+      - http:
+          path: /generateJWTToken
+          method: post
+          cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:
@@ -87,8 +88,7 @@ functions:
         - http:
             path: /admins
             method: get
-            cors: true
-            
+            cors: true         
   programAPI:
     handler: Controller/programs.handler
     events:
@@ -180,7 +180,7 @@ functions:
             cors: true
   vacanciesAPI:
     handler: Controller/vacancies.handler
-    events: 
+    events:
       - http:
           path: /vacancies/applyVacancies/{id}
           method: get
@@ -206,11 +206,19 @@ functions:
           method: get
           cors: true
       - http:
+          path: /vacancies/acceptedvacancies/
+          method: get
+          cors: true
+      - http:
           path: /vacancies/{vacancyId}
           method: get
           cors: true
       - http:
           path: /vacancies/{vacancyId}
+          method: delete
+          cors: true
+      - http:
+          path: /vacancies/delete/{vacancyId}
           method: delete
           cors: true
       - http:
@@ -263,8 +271,6 @@ functions:
           path: /image-album/{album_Id}
           method: delete
           cors: true
-  
-
       - http:
           path: /image-album/{album_Id}
           method: get

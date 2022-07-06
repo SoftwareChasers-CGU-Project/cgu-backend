@@ -14,7 +14,7 @@ const upload = multer({ dest: 'uploads/' });
     app.get('/registerSession/:eventId', async(req, res) => {
       try {
           const Id  = req.params.eventId;
-          console.log(Id)
+          
           const Program = await RegisterSessionService.getUndergraduates(Id);
           
           if ( Program) {

@@ -4,7 +4,6 @@ const mysql = require('../dbconfig');
 module.exports = {
 async createSession (session) {
   let sql = "INSERT INTO comSessions SET ?";
-  console.log(sql)
   let result =  mysql.query(sql, session, (err) => {
     if (err) {
       throw err;
@@ -25,12 +24,10 @@ async createCompany (company) {
   let check_sql=await mysql.query(`select companyName from company where companyEmail='${company.companyEmail}'`)
   
   if(check_sql[0].companyName!==company.companyName){
-    console.log("not equal");
     return;
   }
     
-  let sql = `INSERT INTO company SET companyName='${company.companyName}', companyEmail='${company.companyEmail}' ON DUPLICATE KEY UPDATE companyName='${company.companyName}', companyEmail='${company.companyEmail}'`
-  console.log(sql)            
+  let sql = `INSERT INTO company SET companyName='${company.companyName}', companyEmail='${company.companyEmail}' ON DUPLICATE KEY UPDATE companyName='${company.companyName}', companyEmail='${company.companyEmail}'`;        
   let result = mysql.query(sql, company, (err) => {
     if (err) {
       throw err;
@@ -109,7 +106,6 @@ async viewCompany(Id)  {
 
 async updateSession(session)  { 
   var sql = `UPDATE comSessions SET sessionStatus=1 WHERE sessionId='${session}'`;
-  console.log(sql);
   let result =  mysql.query(sql, (err) => {
     if (err) {
       throw err;
@@ -127,7 +123,6 @@ async updateSession(session)  {
 
 async getEmail(id)  { 
   var sql = `SELECT  companyEmail,sessionTopic,sessionDate from comSessions WHERE sessionId='${id}'`;
-  console.log(sql);
   let result =  mysql.query(sql,id);
   JSON.parse(JSON.stringify(result))
 
