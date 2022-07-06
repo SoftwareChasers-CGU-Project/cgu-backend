@@ -211,6 +211,23 @@ app.get("/vacancies/apply", async (req, res) => {
     }
   }),
 
+  //get a vacancy by Id in main website
+  app.get("/vacancies/acceptedvacancies/:vacancyId/", async (req, res) => {
+    try {
+      const vacancyId = req.params.vacancyId;
+      const getvacancy = await VacancyService.getVacancyById(vacancyId);
+
+      if (getvacancy) {
+        return res.status(200).send({
+          data: getvacancy,
+        });
+      }
+    } catch (error) {
+      //  handle errors here
+      console.log(error, "error!!");
+    }
+  }),
+
   //delete a vacancy
   app.delete("/vacancies/:vacancyId/", async (req, res) => {
     try {
