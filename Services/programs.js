@@ -34,7 +34,6 @@ async getAllProgram ()  {
 async getAllPastProgram ()  {
   let sql = "SELECT * FROM programs where programStatus=1 ORDER BY programDate ASC";
   let result = mysql.query(sql);
-  console.log("ALL")
   if(result)  {
     return result;
   }
@@ -81,7 +80,6 @@ async updateProgram(program)  {
 
 async getDepartmentEvents()  {
   var sql = `SELECT * FROM programs WHERE programCat='Department Event' and programStatus=0 ORDER BY programDate ASC`;
-  console.log(sql);
   let result = mysql.query(sql);
   if(result)  {
     return result;
@@ -91,7 +89,6 @@ async getDepartmentEvents()  {
 
 async getCGUEvents()  {
   var sql = `SELECT * FROM programs WHERE programCat='CGU Event' and programStatus=0 ORDER BY programDate ASC`;
-  console.log(sql);
   let result = mysql.query(sql);
   if(result)  {
     return result;
@@ -101,7 +98,6 @@ async getCGUEvents()  {
 
 async getWorkshops() {
   var sql = `SELECT * FROM programs WHERE programCat='Workshop' and programStatus=0 ORDER BY programDate ASC`;
-  console.log(sql);
   let result = mysql.query(sql);
   if(result)  {
     return result;

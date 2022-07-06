@@ -7,18 +7,39 @@ uuidv4();
 const Program= require('../Model/programs');
 const ProgramService = require('../Services/programs');
 const nodemailer = require("nodemailer");
-
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 const multer  = require('multer');
 const registerEventService = require('../Services/registerEvent');
 const upload = multer({ dest: 'uploads/' });
+var jwt = require("jsonwebtoken");
 
+function verifyToken(req, res, next) {
+ 
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  let token = req.headers.authorization.split(" ")[1];
+  console.log(token);
+  if (token === "null") {
+    return res.status(401).send("Unauthorized");
+  }
+
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  if(payload.role == 'Admin' || payload.role == 'MainAdmin'){
+    next();
+
+  }else{
+    return res.status(401).send("Unauthorized");
+  }
+  
+}
 
 //  function for getting all programs
 app.get('/programs/past', async (req, res) => {
+
   try {
       const allPrograms = await ProgramService.getAllPastProgram();
       const allPast= await allPrograms;
@@ -79,7 +100,7 @@ app.get('/programs/programType/:programCat', async (req, res) => {
 
 
   //  function for deleting a program
-  app.delete('/programs/:programId', async(req, res) => {
+  app.delete('/programs/:programId', verifyToken,async(req, res) => {
     try {
         const Id  = req.params.programId;
         const underGrads=await registerEventService.getEmails(Id);
@@ -149,7 +170,7 @@ app.get('/programs/programType/:programCat', async (req, res) => {
     });
 
     //  function for creating a new program
-    app.post('/programs', async (req, res) => {
+    app.post('/programs',verifyToken, async (req, res) => {
       try {
       const data  = req.body;
       const {programImage,programName,programDate,programTime,programCat,programDesc} = data;
@@ -170,7 +191,7 @@ app.get('/programs/programType/:programCat', async (req, res) => {
     });
 
      //  function for updating a program
-    app.put('/programs/:programId', async (req, res) => {
+    app.put('/programs/:programId',verifyToken, async (req, res) => {
       try {
       // console.log(req.body);
       if(!req.body) {

@@ -3,7 +3,6 @@ const mysql = require('../dbconfig');
 
 module.exports = {
 async getUndergraduates(Id)  {
-  console.log(Id)
   var sql = `SELECT email,undergradFName,undergradLName,batch,faculty FROM undergraduates WHERE email in (select undergradEmail from undergraduateSessionRegistration where eventId ='${Id}')`;
   let result = mysql.query(sql,Id);
   if(result)  {

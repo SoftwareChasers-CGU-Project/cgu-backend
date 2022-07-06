@@ -60,6 +60,17 @@ module.exports = {
     return "Error fetching vacancies from db";
   },
 
+  async deleteApplyVacancies(vacancyId) {
+    let result = await mysql.query({
+      sql: "DELETE FROM applyVacancies where vacancyId = " + mysql.escape(vacancyId),
+    });
+
+    if (result) {
+      return result;
+    }
+    return "Error fetching vacancies from db";
+  },
+
   //get all pending vacancies
   async getPendingVacancies() {
     let result = await mysql.query({
