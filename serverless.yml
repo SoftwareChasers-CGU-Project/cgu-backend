@@ -60,13 +60,6 @@ provider:
 
 
 functions:
-  JWTToken:
-    handler: Controller/com-sessions.handler
-    events:
-      - http:
-          path: /generateJWTToken
-          method: post
-          cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:
@@ -214,6 +207,10 @@ functions:
           method: get
           cors: true
       - http:
+          path: /vacancies/acceptedvacancies/{vacancyId}
+          method: get
+          cors: true
+      - http:
           path: /vacancies/{vacancyId}
           method: delete
           cors: true
@@ -255,6 +252,10 @@ functions:
       - http:
           path: /consultants/update/{consultantId}
           method: put
+          cors: true
+      - http:
+          path: /consultants
+          method: get
           cors: true
   albumAPI:
     handler: Controller/image-album.handler
@@ -346,8 +347,7 @@ functions:
       - http:
           path: /auth/logout
           method: delete
-          cors: true         
-
+          cors: true  
   sendEmail:
     handler: controller/email.sendEmail
     events:
@@ -355,9 +355,15 @@ functions:
           path: send-email
           method: POST
           cors: true
-
-        
+#   JWTToken:
+#     handler: Controller/consultants.handler
+#     events:
+#       - http:
+#           path: /generateJWTToken
+#           method: POST
+#           cors: true
        
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
