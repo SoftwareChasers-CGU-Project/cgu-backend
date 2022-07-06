@@ -116,19 +116,19 @@ app.post('/auth/login', async (req, res) => {
         const userPassword = req.body.undergradPassword.toString();
         const result = await userLoginService.viewUser(userEmail);
         if (result.length === 0) {
-            return res.status(200).send({
-                data: ({ login: false })
+            return res.status(403).send({
+                data: 'user has not registered'
             })
         }
 
         const isMatch = await userLoginService.isValidPassword(userEmail, userPassword);
         console.log(isMatch);
         if (!isMatch) {
-            return res.status(200).send({
-                data: ({ login: false })
+            return res.status(403).send({
+                data: 'email password mismatch'
             })
         }
-    
+
 
         const accessToken = await signAccessToken(userEmail);
         console.log(accessToken);

@@ -16,29 +16,74 @@ const s3 = new S3({
 
 })
 
-function uploadFile(file) {
-    const fileStream = fs.createReadStream(file.path)
 
-    const uploadParams = {
-        Bucket: bucketName,
-        Body: fileStream,
-        Key: file.filename
+module.exports = {
+    async uploadFile(file) {
+
+        try {
+            // console.log('inside upload file')
+            const fileStream = fs.readFileSync(file.path)
+            console.log('fileStream')
+            const uploadParams = {
+                Bucket: bucketName,
+                Key: file.filename,
+                Body: fileStream
+
+            }
+            console.log('upload params')
+            // return s3.upload(fileStream).promise()
+
+            return s3.upload(uploadParams, (err, data) => {
+                if (err) {
+                    console.log(err)
+                }
+                console.log(data.Location)
+            })
+
+
+
+        } catch (e) {
+            console.log(e)
+        }
+
+
+
+    },
+
+    async getFileStream(fileKey) {
+        const downloadParams = {
+            Key: fileKey,
+            Bucket: bucketName
+        }
+
+        return s3.getObject(downloadParams).createReadStream();
     }
-
-    return s3.upload(uploadParams).promise()
 
 }
 
+// function uploadFile(file) {
+//     const fileStream = fs.createReadStream(file.path)
 
-function getFileStream(fileKey) {
-    const downloadParams = {
-        Key: fileKey,
-        Bucket: bucketName
-    }
+//     const uploadParams = {
+//         Bucket: bucketName,
+//         Body: fileStream,
+//         Key: file.filename
+//     }
 
-    return s3.getObject(downloadParams).createReadStream()
-}
+//     return s3.upload(uploadParams).promise()
 
-exports.getFileStream = getFileStream
+// }
 
-exports.uploadFile = uploadFile
+
+// function getFileStream(fileKey) {
+//     const downloadParams = {
+//         Key: fileKey,
+//         Bucket: bucketName
+//     }
+
+//     return s3.getObject(downloadParams).createReadStream()
+// }
+
+// exports.getFileStream = getFileStream
+
+// exports.uploadFile = uploadFile
