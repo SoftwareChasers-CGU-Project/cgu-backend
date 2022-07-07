@@ -4,55 +4,17 @@ const app = express();
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-const Program= require('../Model/registerEvent');
+const Program= require('../Model/registerSession');
 const RegisterSessionService = require('../Services/registerSession');
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-//  function for getting all programs
-app.get('/programs', async (req, res) => {
-  try {
-      const allPrograms = await ProgramService.getAllProgram();
-      const all= await allPrograms;
-      if (all) {
-        return res.status(200).send(
-          all
-        )
-      }
-    } catch (error) {
-       console.log(error, "error!!");
-    }
-    	
-  
-  }),
-
-  //  function for deleting a program
-  app.delete('/programs/:programId', async(req, res) => {
-    try {
-        const Id  = req.params.programId;
-        const program = await ProgramService.deleteProgram(Id);
-        
-        if (program) {
-          return res.status(200).send(
-            
-          )
-        }
-      } catch (error) {
-         console.log(error, "error!!");
-      }
-        
-    
-    }),
-
-    //  function for viewing a program
     app.get('/registerSession/:eventId', async(req, res) => {
       try {
           const Id  = req.params.eventId;
-          console.log(Id)
+          
           const Program = await RegisterSessionService.getUndergraduates(Id);
           
           if ( Program) {
@@ -67,55 +29,25 @@ app.get('/programs', async (req, res) => {
       
     }),
 
-    //  function for creating a new program
+ 
+
     app.post('/registerSession', async (req, res) => {
-      console.log(req.body);
-      // if(req.body.email == "abc"){
-      //   res.status(200).json({status : true, msg : "Success"});
-
-      // }else{
-      //   res.status(422).json({status : false, msg : "False"});
-
-      // }
-      // return "Please pass all required fields!";
-
       try {
-      // const data  = req.body;
-      // const {eventId,undergradEmail} = data;
-      // if(!data) {
-      //   return "Please pass all required fields!"
-      // }
-      // const dataToSave = req.body;
-      let createProgram =  await RegisterSessionService.addRegisterSession(req.body);
-      if (createProgram) {
-        return res.status(200).send(
-          createProgram
-        )
-      }
-      } catch (error) {
+        let registerSession =  await RegisterSessionService.addRegisterSession(req.body);
+        if (registerSession) {
+          res.status(200).json({status : true, msg : "Success"});
+          registerSession
+          
+        }
+        else{
+          res.status(422).json({status : false, msg : "False"});
+        } }
+      catch (error) {
         console.log(error, "error!!");
       }
     
-    }),
-
-     //  function for updating a program
-    app.put('/programs/:programId', async (req, res) => {
-      try {
-      // console.log(req.body);
-      if(!req.body) {
-        return "Please pass all required fields!"
-      }
-      let updateProgram =  await ProgramService.updateProgram(req.body);
-      if (updateProgram) {
-        return res.status(200).send(
-          updateProgram
-        )
-      }
-      } catch (error) {
-        console.log(error, "error!!");
-      }
- 
     })
+
 
 
 module.exports.handler = serverless(app);

@@ -1,21 +1,24 @@
 const serverless = require('serverless-http');
-// require('dotenv').config()
-
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads' })
+const fs = require('fs');
+const util = require('util');
+const unlinkFile = util.promisify(fs.unlink);
+
 const { v4: uuidv4 } = require('uuid');
 uuidv4();
-
-//const mysql = require('../dbconfigs');
 const AlbumService = require('../Services/image-album');
 
 
 
+const { uploadFile, getFileStream } = require('../Services/aws-s3')
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 
 app.use(function(req, res, next) {
@@ -24,15 +27,16 @@ app.use(function(req, res, next) {
     next();
 });
 
+// const headerOptions = { headers: { Accept: 'application/json' } }
+
 app.get('/image-album/', async(req, res) => {
         try {
-            // await dbConnection();
+
             const allAlbums = await AlbumService.getListOfAlbums();
             const albumData = await allAlbums;
-            //console.log(hi)
+
 
             if (albumData) {
-                console.log(`get called`)
                 return res.status(200).send({
                     data: albumData
                 })
@@ -45,100 +49,97 @@ app.get('/image-album/', async(req, res) => {
 
     }),
 
-    // -------------------------------------------------------------------
-
-    app.delete('/image-album/:album_Id', async(req, res) => {
+    app.get('/image-album/:album_Id', async(req, res) => {
         try {
-            console.log(`delete called`)
-            const Id = req.params.album_id;
-            console.log(Id);
-            // console.log(`hi`)
+            const Id = req.params.album_Id;
+            const album = await AlbumService.viewAlbum(Id);
+            if (album) {
+                return res.status(200).send(
+                    album
+                )
+            }
+        } catch (error) {
+            console.log(error, "error");
+        }
+    })
+
+
+app.delete('/image-album/:album_Id', async(req, res) => {
+        try {
+            const Id = req.params;
             const deleteData = await AlbumService.deleteAlbum(Id);
             if (deleteData) {
-                console.log(`delete called`)
                 return res.status(200).send({})
             }
         } catch (error) {
-            //  handle errors here
             console.log(error, "error!!");
         }
     }),
 
-    // -----------------------------------------------------------
-    // app.post("/", (req, res) => {
-
-    // let post = { name: "Jake Smith", description: "Chief Executive Officer" };
-    // const data  = req.body;
-    // const {ProductName} = data;
-    // const dataToSave = {ProductName,Id:uuidv4()};
-    // if(!data) {
-    //    return "Please pass all required fields!"
-    // }
 
 
-    // let sql = "INSERT INTO products SET ?";
+    app.post('/image-album/', async(req, res) => {
+        try {
 
-    // let query = mysql.query(sql, dataToSave, (err) => {
+            const data = req.body;
 
-    // let sql = `INSERT INTO products (Id, ProductName) values (dataToSave`;
+            const { name, description, createdDate, albumLink } = data;
 
-    // let query = mysql.query(sql, (err) => {
+            if (!data) {
+                return "Please pass all required fields!"
+            }
+            const dataToSave = { album_id: uuidv4(), name, description, createdDate, albumLink };
+            let createAlbum = await AlbumService.createAlbum(dataToSave);
+            if (createAlbum) {
+                return res.status(200).send(
+                    createAlbum
+                )
 
-    //     if (err) {
+            }
+        } catch (error) {
+            console.log(error, "error!!");
+        }
 
-    //       throw err;
+    })
 
-    //     }
 
-    //     if (query) {
-    //       return res.status(200).send({
-    //         data: query
-    //       })
-    //     }
-
-    //   });
-
-    // });
-
-    //  function for creating a new product
-    data = require("../Model/image-album")
-app.post('/image-album/', async(req, res) => {
+app.put('/image-album/:albumId', async(req, res) => {
     try {
-        //  await dbConnection();
-        const data = req.body;
-        // const { name } = data;
-        const { name, description } = data;
-        console.log(description)
-            // const { productId } = data;
-        if (!data) {
+        const albumId = req.params.albumId;
+        const albumName = req.body.name;
+        const albumDesc = req.body.description;
+        const createdDate = req.body.createdDate;
+        const albumLink = req.body.albumLink;
+        if (!req.body) {
             return "Please pass all required fields!"
         }
-        const dataToSave = { album_id: uuidv4(), name, description, };
-        let createAlbum = await AlbumService.createAlbum(dataToSave);
-        if (createAlbum) {
-            return res.status(200).send(
-                createAlbum
-            )
+        const dataToSave = { albumName, albumDesc, albumId, createdDate, albumLink };
+        let updateAlbum = await AlbumService.updateAlbum(dataToSave);
+        if (updateAlbum) {
+            return res.status(200).send(updateAlbum)
         }
     } catch (error) {
-        //  handle errors here
-        console.log(error, "error!!");
+        console.log(error, "error ");
     }
 
 })
 
 
+app.post('/image-album/upload', upload.single('file'), async(req, res) => {
+    const file = req.file;
+    const result = await uploadFile(file);
+    this.res.error.retryable = true;
+    await unlinkFile(file.path);
+    const info = req.body;
+    res.send({ imagePath: `/image-album/upload/${result.Key}` })
+})
 
+app.get('/image-album/upload/:key', (req, res) => {
+    const key = req.params.key;
+    const readStream = getFileStream(key);
 
+    readStream.pipe(res)
+})
 
-
-
-
-
-// app.listen("3000", () => {
-
-//   console.log("Server started on port 3000");
-
-// });
 
 module.exports.handler = serverless(app);

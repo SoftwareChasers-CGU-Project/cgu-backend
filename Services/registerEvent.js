@@ -2,12 +2,25 @@ const Product= require ('../Model/registerEvent');
 const mysql = require('../dbconfig');
 
 module.exports = {
-async addRegisterEvent (register) {
-  console.log(register.eventId)
-  let sql = `INSERT INTO undergraduateEventRegistration  SET eventId='${register.eventId}', undergradEmail='${register.undergradEmail}' ON DUPLICATE KEY UPDATE eventId='${register.eventId}', undergradEmail='${register.undergradEmail}'`
-  
+  async getUndergraduates(Id)  {
+    var sql = `SELECT email,undergradFName,undergradLName,batch,faculty FROM undergraduates WHERE email in (select undergradEmail from undergraduateEventRegistration where eventId =? )`;
+    let result = mysql.query(sql,Id);
+    if(result)  {
+      return result;
+    }
+    return "Error fetching the program from db"
+  },
 
-  let result =  mysql.query(sql, register, (err) => {
+  async addRegisterEvent (register) {
+  let check_sql=await mysql.query(`select * from undergraduates where email='${register.undergradEmail}'`)
+ 
+  
+  if(check_sql[0]==null){
+    return;
+  }  
+ 
+  let sql = `INSERT INTO undergraduateEventRegistration  SET eventId='${register.eventId}', undergradEmail='${register.undergradEmail}' ON DUPLICATE KEY UPDATE eventId='${register.eventId}', undergradEmail='${register.undergradEmail}'`;
+  let result = mysql.query(sql, register, (err) => {
     if (err) {
       throw err;
     }
@@ -17,41 +30,14 @@ async addRegisterEvent (register) {
     if(result) {
       return {
         data: register,
-        message: " successfully Registered!"
+        message: "consultant successfully created!"
     };
   }
-      return "Error creating new program"
+return "Error creating new Consultant"
 },
 
-
-async getAllProgram ()  {
-  let sql = "SELECT * FROM programs";
-  let result = mysql.query(sql);
-  
-  // let result =  mysql.query(sql, (err) => {
-  //   if (err) {
-  //     throw err;
-  //   }
-  // });
-  if(result)  {
-    return result;
-  }
-  return "Error fetching products from db"
-},
-
-
-async deleteProgram(Id)  {
-  var sql = `DELETE FROM programs WHERE programId=?`;
-  let result = mysql.query(sql,Id);
-  if(result)  {
-    return result;
-  }
-  return "Error deleting programs from db"
-},
-
-
-async getUndergraduates(Id)  {
-  var sql = `SELECT email,undergradFName,undergradLName,batch,faculty FROM undergraduates WHERE email in (select undergradEmail from undergraduateEventRegistration where eventId =? )`;
+async getEmails(Id)  {
+  var sql = `select undergradEmail from undergraduateEventRegistration where eventId ='${Id}'`;
   let result = mysql.query(sql,Id);
   if(result)  {
     return result;
@@ -60,22 +46,5 @@ async getUndergraduates(Id)  {
 },
 
 
-async updateProgram(program)  { 
-  var sql = `UPDATE programs SET programName='${program.programName}',programDate='${program.programDate}',programCat='${program.programCat}', programDesc='${program.programDesc}', programImage='${program.programImage}'  WHERE programId='${program.programId}'`;
-  // console.log(sql);
-  let result =  mysql.query(sql, (err) => {
-    if (err) {
-      throw err;
-    }
-
-  });
-  if(result) {
-    return {
-      data: program,
-      message: "Program updated successfully!"
-  };
-}
-    return "Error updating the program"
-}
 
 };
