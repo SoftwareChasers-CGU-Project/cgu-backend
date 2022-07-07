@@ -12,6 +12,30 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
+var jwt = require("jsonwebtoken");
+
+function verifyToken(req, res, next) {
+ 
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  let token = req.headers.authorization.split(" ")[1];
+  console.log(token);
+  if (token === "null") {
+    return res.status(401).send("Unauthorized");
+  }
+
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  if(payload.role == 'Admin' || payload.role == 'MainAdmin'){
+    next();
+
+  }else{
+    return res.status(401).send("Unauthorized");
+  }
+  
+}
 
 //  function for getting all programs
 app.get('/about-us', async (req, res) => {
@@ -30,7 +54,7 @@ app.get('/about-us', async (req, res) => {
   
   }),
 
-  app.post('/about-us', async (req, res) => {
+  app.post('/about-us',verifyToken, async (req, res) => {
     try {
     const data  = req.body;
     const {title,aboutUsDescription} = data;
@@ -50,7 +74,7 @@ app.get('/about-us', async (req, res) => {
   
   })
 
-  app.delete('/about-us/:ID', async(req, res) => {
+  app.delete('/about-us/:ID',verifyToken, async(req, res) => {
     try {
         const Id  = req.params.ID;
         const aboutUs = await AboutUsService.deleteAboutUs(Id);
@@ -84,7 +108,7 @@ app.get('/about-us', async (req, res) => {
       
     }),
 
-    app.put('/about-us/:ID', async (req, res) => {
+    app.put('/about-us/:ID',verifyToken, async (req, res) => {
       try {
       console.log(req.body);
       const ID  = req.params.ID;

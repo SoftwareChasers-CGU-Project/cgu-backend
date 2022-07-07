@@ -13,6 +13,31 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
+var jwt = require("jsonwebtoken");
+
+function verifyToken(req, res, next) {
+ 
+  if (!req.headers.authorization) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  let token = req.headers.authorization.split(" ")[1];
+  console.log(token);
+  if (token === "null") {
+    return res.status(401).send("Unauthorized");
+  }
+
+  let payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  if(payload.role == 'Admin' || payload.role == 'MainAdmin'){
+    next();
+
+  }else{
+    return res.status(401).send("Unauthorized");
+  }
+  
+}
+
 //  function for getting all programs
 app.get('/news', async (req, res) => {
   try {
@@ -30,7 +55,7 @@ app.get('/news', async (req, res) => {
   
   }),
 
-  app.post('/news', async (req, res) => {
+  app.post('/news',verifyToken, async (req, res) => {
     try {
     const data  = req.body;
     const {newsDate,title,newsDescription,newsCate} = data;
@@ -50,7 +75,7 @@ app.get('/news', async (req, res) => {
   
   })
 
-  app.delete('/news/:newsId', async(req, res) => {
+  app.delete('/news/:newsId',verifyToken, async(req, res) => {
     try {
         const Id  = req.params.newsId;
         const news = await NewsService.deleteNews(Id);
@@ -84,7 +109,7 @@ app.get('/news', async (req, res) => {
       
     }),
 
-    app.put('/news/:newsID', async (req, res) => {
+    app.put('/news/:newsID',verifyToken, async (req, res) => {
       try {
       console.log(req.body);
       const newsID  = req.params.newsID;
