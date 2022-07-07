@@ -15,7 +15,7 @@ function verifyToken(req, res, next) {
   if (!req.headers.authorization) {
     return res.status(401).send("Unauthorized");
   }
-  console.log(req.headers.authorization);
+  
 
   let token = req.headers.authorization.split(' ')[1]
  

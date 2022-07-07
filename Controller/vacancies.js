@@ -391,7 +391,7 @@ app.get("/vacancies/apply",verifyToken, async (req, res) => {
   app.get("/vacancies/applyVacancies/:id/", verifyToken, async (req, res) => {
     try {
       const linkedin = req.params.id;
-      console.log(linkedin);
+      
       let details = await VacancyService.getProfileDetails(linkedin);
       
 
