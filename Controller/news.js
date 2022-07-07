@@ -16,8 +16,8 @@ const upload = multer({ dest: 'uploads/' });
 //  function for getting all programs
 app.get('/news', async (req, res) => {
   try {
-      const allPrograms = await NewsService.getAllNews();
-      const all= await allPrograms;
+      const allProgrammes = await NewsService.getAllNews();
+      const all= await allProgrammes;
       if (all) {
         return res.status(200).send(
           all
@@ -33,11 +33,11 @@ app.get('/news', async (req, res) => {
   app.post('/news', async (req, res) => {
     try {
     const data  = req.body;
-    const {newsDate,title,newsDescription} = data;
+    const {newsDate,title,newsDescription,newsCate} = data;
     if(!data) {
       return "Please pass all required fields!"
     }
-    const dataToSave = {newsDate,title,newsDescription,newsID :uuidv4()};
+    const dataToSave = {newsDate,title,newsDescription,newsCate,newsID:uuidv4()};
     let createProgram =  await NewsService.createNews(dataToSave);
     if (createProgram) {
       return res.status(200).send(
@@ -84,10 +84,10 @@ app.get('/news', async (req, res) => {
       
     }),
 
-    app.put('/news/:newsId', async (req, res) => {
+    app.put('/news/:newsID', async (req, res) => {
       try {
       console.log(req.body);
-      const newsID  = req.params.newsId;
+      const newsID  = req.params.newsID;
       if(!req.body) {
         return "Please pass all required fields!"
       }
@@ -102,6 +102,41 @@ app.get('/news', async (req, res) => {
       }
  
     })
+
+    app.get('/news/newsCate/:newsCate', async (req, res) => {
+      try {
+        const newsCate = req.params.newsCate;
+        console.log(newsCate);
+    
+        if(newsCate == "CGU")
+        {
+            const DepartmentEvents = await NewsService.getCGUNews();  
+            if (DepartmentEvents) {
+              return res.status(200).send(
+                DepartmentEvents   
+            )
+            }
+          }
+        else if(newsCate == "Company"){
+            const CGUEvents = await NewsService.getCompanyNews();  
+            if (CGUEvents) {
+              return res.status(200).send(
+                CGUEvents   
+              )
+            }
+        }
+        else if(newsCate == "false"){
+          const Programs = await NewsService.getAllNews();  
+          if (Programs) {
+            return res.status(200).send(
+              Programs   
+            )
+          }
+        }
+      } catch (error) {
+          console.log(error, "error!!");
+      }
+    });
 
 
   module.exports.handler = serverless(app);

@@ -201,6 +201,33 @@ functions:
             path: /news/{newsId}
             method: put
             cors: true
+        - http:
+            path: /news/newsCate/{newsCate}
+            method: get
+            cors: true
+  AboutUsAPI:
+    handler: Controller/about-us.handler
+    events:
+        - http:
+            path: /about-us
+            method: post
+            cors: true
+        - http:
+            path: /about-us
+            method: get
+            cors: true
+        - http:
+            path: /about-us/{ID}
+            method: get
+            cors: true
+        - http:
+            path: /about-us/{ID}
+            method: delete
+            cors: true
+        - http:
+            path: /about-us/{ID}
+            method: put
+            cors: true
         
        
 #    The following are a few example events you can configure

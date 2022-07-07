@@ -3,6 +3,7 @@ class News {
         this.newsId = newsId;
         this.title = title;
         this.newsDate=newsDate;
+        this.newsCate=newsCate;
         this.newsDescription=newsDescription;
 
     }
