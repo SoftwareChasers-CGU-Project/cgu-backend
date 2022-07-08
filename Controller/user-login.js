@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-let refreshToken = []
+// let refreshToken = []
 
 // app.get('/auth/posts', authenticateToken, (req, res) => {
 //     res.json(users.filter(user => user.email === req.user.email))
@@ -116,16 +116,20 @@ app.post('/auth/login', async (req, res) => {
         const userPassword = req.body.undergradPassword.toString();
         const result = await userLoginService.viewUser(userEmail);
         if (result.length === 0) {
-            return res.status(200).send({
+
+            return res.status(403).send({
                 data: 'user has not registered'
+
             })
         }
 
         const isMatch = await userLoginService.isValidPassword(userEmail, userPassword);
         console.log(isMatch);
         if (!isMatch) {
-            return res.status(200).send({
+
+            return res.status(403).send({
                 data: 'email password mismatch'
+
             })
         }
     

@@ -297,7 +297,7 @@ functions:
           path: /satisfaction
           method: post
           cors: true
-  adminauthenticationAPI:
+  adminAuthenticationAPI:
     handler: Controller/admin-login.handler
     events:
       - http:
@@ -318,7 +318,8 @@ functions:
       - http:
           path: /auth/logout
           method: delete
-          cors: true
+          cors: true          
+
   sendEmail:
     handler: controller/email.sendEmail
     events:
