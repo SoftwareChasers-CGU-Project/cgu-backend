@@ -60,13 +60,6 @@ provider:
 
 
 functions:
-  JWTToken:
-    handler: Controller/com-sessions.handler
-    events:
-      - http:
-          path: /generateJWTToken
-          method: post
-          cors: true
   UserRegistrationAPI:
     handler: Controller/users.handler
     events:
@@ -214,6 +207,10 @@ functions:
           method: get
           cors: true
       - http:
+          path: /vacancies/acceptedvacancies/{vacancyId}
+          method: get
+          cors: true
+      - http:
           path: /vacancies/{vacancyId}
           method: delete
           cors: true
@@ -256,6 +253,10 @@ functions:
           path: /consultants/update/{consultantId}
           method: put
           cors: true
+      - http:
+          path: /consultants
+          method: get
+          cors: true
   albumAPI:
     handler: Controller/image-album.handler
     events:
@@ -287,6 +288,37 @@ functions:
           path: /image-album/upload
           method: get
           cors: true
+  consultationAPI:
+    handler: Controller/consultation.handler
+    events:
+      - http:
+          path: /consultationReq/add/{consultantId}
+          method: post
+          cors: true
+      - http:
+          path: /consultation-Requests/list
+          method: get
+          cors: true
+      - http:
+          path: /scheduled-sessions/list
+          method: get
+          cors: true
+      - http:
+          path: /consultation-Requests/list/{sessionType}
+          method: get
+          cors: true
+      - http:
+          path: /consultation-sessions/list/{sessionType}
+          method: get
+          cors: true
+      - http: 
+          path: /scheduled-session/{consultation_id}
+          method: put
+          cors: true
+      - http:
+          path: /scheduled-session/delete/{consultation_id}
+          method: delete
+          cors: true
   satisfactionAPI:
     handler: Controller/satisfaction.handler
     events:
@@ -315,8 +347,7 @@ functions:
       - http:
           path: /auth/logout
           method: delete
-          cors: true          
-
+          cors: true  
   sendEmail:
     handler: controller/email.sendEmail
     events:
@@ -324,7 +355,13 @@ functions:
           path: send-email
           method: POST
           cors: true
-        
+#   JWTToken:
+#     handler: Controller/consultants.handler
+#     events:
+#       - http:
+#           path: /generateJWTToken
+#           method: POST
+#           cors: true
        
 
 #    The following are a few example events you can configure
