@@ -298,6 +298,33 @@ functions:
             path: /news/newsCate/{newsCate}
             method: get
             cors: true
+  contact-usAPI:
+    handler: Controller/contact-us.handler
+    events:
+        - http:
+            path: /contact-us
+            method: post
+            cors: true
+        - http:
+            path: /contact-us
+            method: get
+            cors: true
+        - http:
+            path: /contact-us/{ID}
+            method: get
+            cors: true
+        - http:
+            path: /contact-us/{ID}
+            method: delete
+            cors: true
+        - http:
+            path: /contact-us/{ID}
+            method: put
+            cors: true
+        - http:
+            path: /contact-us/Faculty/{Faculty}
+            method: get
+            cors: true
   AboutUsAPI:
     handler: Controller/about-us.handler
     events:
