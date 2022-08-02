@@ -318,8 +318,15 @@ functions:
       - http:
           path: /auth/logout
           method: delete
-          cors: true          
-
+          cors: true
+      - http:
+          path: /auth/forgot-password
+          method: put
+          cors: true
+      - http:
+          path: /auth/reset-password
+          method: put
+          cors: true         
   sendEmail:
     handler: controller/email.sendEmail
     events:
