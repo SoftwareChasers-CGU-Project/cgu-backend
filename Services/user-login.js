@@ -44,5 +44,24 @@ module.exports = {
             });
         }
 
+    },
+
+    async updatePassword(newDetails) {
+        try {
+            var sql = `UPDATE undergraduates SET undergradPassword = '${newDetails.undergradPassword}' WHERE email= '${newDetails.email}' `;
+            console.log(newDetails);
+            console.log(newDetails.undergradPassword)
+            console.log(newDetails.email)
+            console.log(sql)
+            let result = await mysql.query(sql, newDetails);
+            if (result) {
+                return "Successfully updated"
+            }
+        } catch (err) {
+            return "Error updating password"
+        }
     }
+
+
+
 }

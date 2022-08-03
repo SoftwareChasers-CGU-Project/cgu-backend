@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const createError = require('http-errors');
-
+const nodemailer = require("nodemailer");
 const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
@@ -136,35 +136,6 @@ app.post('/auth/login', async (req, res) => {
         console.log(accessToken);
 
 
-        // console.log('hi')
-        // const refreshToken = await signRefreshToken(userEmail);
-        // console.log(refreshToken);
-
-
-        // if (accessToken && refreshToken) {
-        //     return res.status(200).send({
-        //         data: ({ accessToken, refreshToken })
-        //     })
-        // }
-
-
-        // var authorities = [];
-        // user.getRoles().then(roles => {
-        //     for (let i = 0; i < roles.length; i++) {
-        //         authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        //     }
-        //     res.status(200).send({
-        //         // id: user.id,
-        //         // username: user.username,
-        //         email: user.email,
-        //         roles: authorities,
-        //         accessToken: accessToken,
-
-        //         // refreshToken: refreshToken
-
-        //     });
-        // });
-
         return res.status(200).send({
             email: userEmail,
             roles: undergraduate,
@@ -173,16 +144,89 @@ app.post('/auth/login', async (req, res) => {
 
 
 
-        // res.send({ accessToken, refreshToken })
-
-
 
     } catch (error) {
         if (error.isJoi === true)
             return next(createError.BadRequest('Invalid Username/Password'))
         // next(error)
     }
+}),
+
+app.put('/auth/forgot-password', async (req, res) => {
+    const userEmail = req.body.email;
+    console.log(req.body)
+    console.log(userEmail);
+    const result = await userLoginService.viewUser(userEmail);
+    if (result.length === 0) {
+        return res.status(403).send({
+            data: 'user has not registered'
+        })
+    }
+
+    const token = jwt.sign({ userEmail }, process.env.RESET_PASSWORD_KEY, { expiresIn: '20m' });
+    console.log(token)
+    var transporter = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 2525,
+        auth: {
+          user: "b4aa8528f611a2",
+          pass: "22f7dc05b604c3"
+        }
+      });
+    console.log(transporter)
+    const link = process.env.CLIENT_URL;
+    let info = await transporter.sendMail({
+        from: '"Career Guidance Unit, University of Moratuwa" <cgu.uom22@gmail.com>',
+        to: userEmail,
+        subject: "Account Activation Link",
+        text: "Please click on the given link to reset your password reset password.",
+        html:
+            "<p>Link to reset your password <a href = " + link + "/" + token + "> activation link </a></p>"
+
+    });
+    console.log('before info')
+    console.log(info)
+    return res.status(200).send({
+        email: userEmail,
+        message: "email sent"
+    })
+
+}),
+
+
+
+app.put('/auth/reset-password', async (req, res) => {
+    try {
+        const { token, newPass, email } = req.body;
+        console.log(token)
+        console.log(newPass)
+        console.log(email)
+        if (token) {
+            jwt.verify(token, process.env.RESET_PASSWORD_KEY, function (error, decodedData) {
+                if (error) {
+                    return res.json({
+                        error: "Incorrect token or expired"
+                    })
+                }
+            })
+        } else {
+            return res.status(401).json({ error: "Authentication error " });
+        }
+        const undergradPassword = await bcrypt.hash(newPass, 10);
+        console.log(undergradPassword);
+        const dataToSave = { email, undergradPassword }
+        const updatePassword = await userLoginService.updatePassword(dataToSave);
+
+        if (updatePassword) {
+            return res.status(200).send(updatePassword)
+        }
+
+
+    } catch (err) {
+        return "error"
+    }
 })
+
 
 
 
